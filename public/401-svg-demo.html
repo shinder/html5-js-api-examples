@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="zh">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+    />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>401-svg-demo</title>
+    <style>
+      svg {
+        width: 300px;
+        height: 200px;
+      }
+      .c1 {
+        fill: red;
+      }
+      .c1:hover {
+        fill: blue;
+      }
+      .c2 {
+        fill: orange;
+      }
+      .c2:hover {
+        fill: purple;
+      }
+    </style>
+  </head>
+  <body>
+    <svg viewBox="0 0 300 200" xmlns="http://www.w3.org/2000/svg">
+      <polygon class="c1" points="0,100 25,25 75,75 100,0" />
+      <polygon
+        points="100,150 125,75 175,125 200,50"
+        fill="green"
+        stroke="black"
+        stroke-width="10"
+      />
+    </svg>
+    <script>
+      const polygon1 = document.querySelector("polygon");
+      polygon1.onclick = () => {
+        const newClass = polygon1.classList.contains("c1") ? "c2" : "c1";
+        polygon1.setAttribute("class", newClass);
+      };
+    </script>
+  </body>
+</html>
