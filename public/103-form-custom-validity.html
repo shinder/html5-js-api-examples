@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="zh">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+    />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>103-自訂驗證訊息</title>
+  </head>
+  <body>
+    <form onsubmit="return false;" autocomplete="on">
+      <label for="myName">帳號：</label>
+      <input type="text" name="myName" id="myName" required autofocus /><br />
+
+      <label for="myPass">密碼：</label>
+      <input
+        type="password"
+        name="myPass"
+        id="myPass"
+        pattern=".{6,}"
+        required
+      /><br />
+
+      <label for="myPass2">密碼確認：</label>
+      <input type="password" name="myPass2" id="myPass2" /><br />
+
+      <input type="submit" value="註冊" />
+    </form>
+    <script>
+      const myPass = document.querySelector("#myPass");
+      const myPass2 = document.querySelector("#myPass2");
+
+      myPass2.addEventListener("blur", (event) => {
+        console.log(event);
+        if (myPass.value !== myPass2.value) {
+          // 只要有設定，送出前就會顯示
+          myPass2.setCustomValidity("密碼確認欄必須和密碼欄相同內容");
+        } else {
+          // 取消
+          myPass2.setCustomValidity("");
+        }
+      });
+    </script>
+  </body>
+</html>
