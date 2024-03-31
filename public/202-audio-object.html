@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="zh">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+    />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>202-audio-object</title>
+  </head>
+  <body>
+    <button id="doLoad">載入</button>
+    <button id="doPlay" style="display: none">播放或停止</button>
+    <script>
+      const doLoad = document.querySelector("#doLoad");
+      const doPlay = document.querySelector("#doPlay");
+      const au = new Audio();
+      const handler = (event) => {
+        console.log(` ${event.type}
+			duration: ${au.duration}, currentTime: ${au.currentTime},
+			volume: ${au.volume}, muted: ${au.muted}, paused: ${au.paused} `);
+      };
+      au.addEventListener("loadedmetadata", handler);
+      au.addEventListener("timeupdate", handler);
+      au.addEventListener("ended", handler);
+
+      doLoad.onclick = () => {
+        au.src = "media/196381__minitauross__panflute-loop.mp3";
+        doLoad.style.display = "none";
+        doPlay.style.display = "block";
+      };
+      doPlay.onclick = () => (au.paused ? au.play() : au.pause());
+    </script>
+  </body>
+</html>

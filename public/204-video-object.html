@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="zh">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+    />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>204-video-object</title>
+  </head>
+  <body>
+    <video id="player" controls></video>
+    <div id="btnGroup">
+      <button id="video1">video 1</button>
+      <button id="video2">video 2</button>
+      <button id="doPlay">play or pause</button>
+    </div>
+    <script>
+      const videos = [
+        "media/big-buck-bunny_trailer.webm",
+        "media/elephants-dream.webm",
+      ];
+      const player = document.querySelector("#player");
+
+      const playerListener = (event) => {
+        console.log(` ${event.type}
+			duration: ${player.duration}, currentTime: ${player.currentTime},
+			volume: ${player.volume}, muted: ${player.muted}, paused: ${player.paused} `);
+      };
+
+      player.addEventListener("loadedmetadata", playerListener);
+      player.addEventListener("timeupdate", playerListener);
+      player.addEventListener("ended", playerListener);
+
+      const btnsListener = (event) => {
+        switch (event.target.id) {
+          case "video1":
+            player.src = videos[0];
+            break;
+          case "video2":
+            player.src = videos[1];
+            break;
+          case "doPlay":
+            player.paused ? player.play() : player.pause();
+            break;
+        }
+      };
+      document
+        .querySelector("#btnGroup")
+        .addEventListener("click", btnsListener);
+      // HTMLMediaElement <- HTMLVideoElement
+    </script>
+  </body>
+</html>

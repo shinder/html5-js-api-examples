@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="zh">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+    />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>205-video-subtitles</title>
+  </head>
+  <body>
+    <video
+      src="media/big-buck-bunny_trailer.webm"
+      preload="auto"
+      controls
+      poster="images/bunny-poster.png"
+    >
+      <track
+        kind="subtitles"
+        label="正體中文"
+        src="media/bunny-zh.vtt"
+        default
+      />
+      <track kind="subtitles" label="English" src="media/bunny-en.vtt" />
+    </video>
+  </body>
+</html>
