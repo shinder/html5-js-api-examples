@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>504-drag-drop</title>
+    <style>
+      .rect {
+        position: absolute;
+        display: flex;
+        width: 200px;
+        height: 200px;
+        background-color: #a2eff6;
+        border: 1px solid gray;
+      }
+      .ball {
+        display: inline-block;
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        text-align: center;
+        line-height: 60px;
+        background-color: #ee6f2f;
+        border: 1px solid black;
+        color: white;
+        font-weight: 800;
+        cursor: pointer;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="rect">
+      <div class="ball" draggable="true">7</div>
+      <div class="ball" draggable="true" style="background-color: red">8</div>
+      <div class="ball" draggable="true" style="background-color: blue">9</div>
+    </div>
+    <div class="rect" style="left: 250px"></div>
+
+    <script>
+      let dragTarget = null; // 目前拖拉的對象
+      const balls = document.querySelectorAll(".ball");
+      const rects = document.querySelectorAll(".rect");
+
+      balls.forEach((b) => {
+        b.addEventListener("dragstart", (e) => (dragTarget = e.currentTarget));
+        b.addEventListener("dragend", (e) => (dragTarget = null));
+      });
+
+      rects.forEach((r) => {
+        r.addEventListener("dragenter", (e) => {
+          r.style.backgroundColor = "#ffeff6";
+        });
+        r.addEventListener("dragover", (e) => e.preventDefault());
+        r.addEventListener("dragleave", (e) => {
+          r.style.backgroundColor = "#a2eff6";
+        });
+        r.addEventListener("drop", (e) => {
+          r.style.backgroundColor = "#a2eff6";
+          console.log("drop");
+          if (dragTarget) {
+            r.append(dragTarget);
+          }
+        });
+      });
+    </script>
+  </body>
+</html>
