@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      .rect {
+        position: absolute;
+        display: flex;
+        flex-wrap: wrap;
+        align-content: flex-start;
+        width: 500px;
+        height: 200px;
+        border: 1px solid gray;
+        background-color: #c8f2f4;
+        left: 120px;
+        top: 80px;
+      }
+      .ball {
+        border-radius: 50%;
+        width: 60px;
+        height: 60px;
+        border: 1px solid gray;
+        line-height: 60px;
+        text-align: center;
+        background-color: #ef5011;
+        color: white;
+        cursor: pointer;
+        user-select: none;
+        box-sizing: border-box;
+      }
+      .big-ball {
+        border-radius: 50%;
+        width: 60px;
+        height: 60px;
+        border: 2px dashed red;
+        background-color: white;
+        box-sizing: border-box;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="rect">
+      <div class="ball">1</div>
+      <div class="ball" style="background-color: rgb(50, 148, 63)">2</div>
+      <div class="ball" style="background-color: rgb(76, 104, 240)">3</div>
+      <div class="ball" style="background-color: rgb(193, 181, 79)">4</div>
+      <div class="ball" style="background-color: rgb(158, 60, 182)">5</div>
+    </div>
+
+    <script>
+      const rect = document.querySelector(".rect");
+      const rectBounds = rect.getBoundingClientRect();
+      console.log({ rectBounds });
+
+      const balls = document.querySelectorAll(".ball");
+      const placeholder = document.createElement("div");
+      placeholder.className = "big-ball";
+
+      let targetData = {
+        el: null,
+        dx: 0,
+        dy: 0,
+      };
+
+      const mDown = (e) => {
+        const t = e.target;
+
+        if (!t.classList.contains("ball")) return; // 有 ball class 才行
+        targetData.el = t;
+        targetData.dx = e.offsetX;
+        targetData.dy = e.offsetY;
+
+        t.style.position = "absolute";
+
+        mMove(e); // 先更新位置
+        window.addEventListener("mousemove", mMove);
+      };
+      const mUp = (e) => {
+        const t = targetData.el;
+        if (!t) return;
+
+        t.remove();
+        const children = [...rect.children];
+        const pIndex = children.indexOf(placeholder);
+        children.splice(pIndex, 1, t);
+        children.forEach((el) => rect.append(el));
+
+        placeholder.remove();
+        t.style.position = "static";
+
+        targetData.el = null;
+        window.removeEventListener("mousemove", mMove);
+      };
+      const mMove = (e) => {
+        const t = targetData.el;
+        if (!t) return;
+
+        t.remove();
+        placeholder.remove();
+        const children = [...rect.children];
+        // 參考位置
+        let pIndex = Math.floor((e.pageX - rectBounds.left) / 60);
+        if (pIndex < 0) pIndex = 0;
+        // console.log({ pIndex });
+        children.splice(pIndex, 0, placeholder);
+        children.push(t);
+        // console.log(children);
+        children.forEach((el) => rect.append(el));
+
+        t.style.left = e.pageX - rectBounds.left - targetData.dx + "px";
+        t.style.top = e.pageY - rectBounds.top - targetData.dy + "px";
+      };
+      balls.forEach((ball) => {
+        ball.addEventListener("mousedown", mDown);
+      });
+
+      window.addEventListener("mouseup", mUp);
+    </script>
+  </body>
+</html>

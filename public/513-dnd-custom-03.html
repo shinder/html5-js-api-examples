@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      .rect {
+        position: absolute;
+        display: flex;
+        flex-wrap: wrap;
+        align-content: flex-start;
+        width: 200px;
+        height: 200px;
+        border: 1px solid gray;
+        background-color: #c8f2f4;
+      }
+      .ball {
+        position: absolute;
+        border-radius: 50%;
+        width: 60px;
+        height: 60px;
+        border: 1px solid gray;
+        line-height: 60px;
+        text-align: center;
+        background-color: #ef5011;
+        color: white;
+        cursor: pointer;
+        user-select: none;
+        box-sizing: border-box;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="rect">
+      <div class="ball">1</div>
+      <div class="ball" style="background-color: rgb(50, 148, 63)">2</div>
+      <div class="ball" style="background-color: rgb(76, 104, 240)">3</div>
+    </div>
+
+    <script>
+      const rect = document.querySelector(".rect");
+      const balls = document.querySelectorAll(".ball");
+
+      let targetData = {
+        el: null,
+        dx: 0,
+        dy: 0,
+      };
+
+      const mDown = (e) => {
+        rect.append(e.target);
+        targetData.el = e.target;
+        targetData.dx = e.offsetX;
+        targetData.dy = e.offsetY;
+        window.addEventListener("mousemove", mMove);
+      };
+      const mUp = (e) => {
+        const t = targetData.el;
+        if (!t) return;
+
+        targetData.el = null;
+        window.removeEventListener("mousemove", mMove);
+      };
+      const mMove = (e) => {
+        const t = targetData.el;
+        if (!t) return;
+
+        t.style.left = e.pageX - targetData.dx + "px";
+        t.style.top = e.pageY - targetData.dy + "px";
+      };
+      balls.forEach((ball) => {
+        ball.addEventListener("mousedown", mDown);
+      });
+
+      window.addEventListener("mouseup", mUp);
+    </script>
+  </body>
+</html>

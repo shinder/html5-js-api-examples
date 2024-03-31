@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      .rect {
+        position: absolute;
+        display: flex;
+        flex-wrap: wrap;
+        align-content: flex-start;
+        width: 200px;
+        height: 200px;
+        border: 1px solid gray;
+        background-color: #c8f2f4;
+      }
+      .ball {
+        position: absolute;
+        border-radius: 50%;
+        width: 60px;
+        height: 60px;
+        border: 1px solid gray;
+        line-height: 60px;
+        text-align: center;
+        background-color: #ef5011;
+        color: white;
+        cursor: pointer;
+        user-select: none;
+        box-sizing: border-box;
+      }
+      .big-ball {
+        position: absolute;
+        border-radius: 50%;
+        width: 60px;
+        height: 60px;
+        border: 2px solid red;
+        background-color: #f3ce84;
+        box-sizing: border-box;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="big-ball" style="left: 300px; top: 250px"></div>
+    <div class="ball">1</div>
+
+    <script>
+      const bx = 300;
+      const by = 250;
+
+      let targetData = {
+        el: null,
+        dx: 0,
+        dy: 0,
+      };
+      const ball = document.querySelector(".ball");
+
+      const mDown = (e) => {
+        targetData.el = e.target;
+        targetData.dx = e.offsetX;
+        targetData.dy = e.offsetY;
+        window.addEventListener("mousemove", mMove);
+      };
+      const mUp = (e) => {
+        const t = targetData.el;
+        if (!t) return;
+        const tx = parseInt(t.style.left);
+        const ty = parseInt(t.style.top);
+
+        const distance = ((tx - bx) ** 2 + (ty - by) ** 2) ** 0.5;
+        console.log({distance})
+        if(distance<50){
+          // 成功貼上
+          t.style.left = bx + 'px';
+          t.style.top = by + 'px';
+        }
+
+        targetData.el = null;
+        window.removeEventListener("mousemove", mMove);
+      };
+      const mMove = (e) => {
+        const t = targetData.el;
+        if (!t) return;
+
+        t.style.left = e.pageX - targetData.dx + "px";
+        t.style.top = e.pageY - targetData.dy + "px";
+      };
+
+      ball.addEventListener("mousedown", mDown);
+      window.addEventListener("mouseup", mUp);
+    </script>
+  </body>
+</html>
