@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="zh">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+    />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>307-畫文字</title>
+    <style>
+      canvas {
+        border: 1px dashed green;
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="myCanvas" width="600" height="400"></canvas>
+    <script>
+      const myCanvas = document.querySelector("#myCanvas");
+      const ctx = myCanvas.getContext("2d");
+      ctx.fillStyle = "red";
+      ctx.strokeStyle = "blue";
+      ctx.lineWidth = 2;
+
+      ctx.textAlign = "center";
+      ctx.textBaseline = "middle";
+
+      ctx.font = "bold 72px serif";
+      ctx.fillText("Hello Canvas", 300, 100);
+      ctx.font = "bold 72px arial";
+      ctx.strokeText("Hello Canvas", 300, 200);
+      ctx.fillText("哈囉", 300, 300);
+    </script>
+  </body>
+</html>

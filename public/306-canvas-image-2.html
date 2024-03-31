@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="zh">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+    />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>306-繪製圖檔</title>
+    <style>
+      canvas {
+        border: 1px dashed green;
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="myCanvas" width="600" height="400"></canvas>
+    <br />
+    <input type="file" id="myFile" hidden accept="image/*" />
+    <button onclick="myFile.click()">繪製圖檔</button>
+    <script>
+      const myCanvas = document.querySelector("#myCanvas");
+      const ctx = myCanvas.getContext("2d");
+			
+      const img = new Image();
+      img.addEventListener("load", (event) => {
+        ctx.drawImage(img, 0, 0);
+      });
+
+      myFile.addEventListener("change", () => {
+        img.src = URL.createObjectURL(myFile.files[0]);
+      });
+    </script>
+  </body>
+</html>

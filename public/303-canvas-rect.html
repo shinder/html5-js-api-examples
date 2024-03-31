@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="zh">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+    />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>303-canvas 畫矩形</title>
+    <style>
+      canvas {
+        border: 1px dashed green;
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="myCanvas" width="600" height="400"></canvas>
+    <script>
+      const myCanvas = document.querySelector("#myCanvas");
+      const ctx = myCanvas.getContext("2d");
+
+      ctx.strokeStyle = "orange"; // 設定畫筆顏色
+      ctx.lineWidth = 20; // 設定畫筆粗細
+      ctx.lineJoin = "round";
+      ctx.strokeRect(50, 50, 100, 100); // (x, y, width, height)
+
+      ctx.fillStyle = "lightblue"; // 填滿的顏色
+      ctx.fillRect(50, 200, 100, 100);
+
+      ctx.strokeRect(200, 50, 100, 100);
+      ctx.fillRect(200, 50, 100, 100);
+
+      ctx.fillRect(200, 200, 100, 100);
+      ctx.strokeRect(200, 200, 100, 100);
+
+      // 陰影效果
+      ctx.shadowOffsetX = 10; // 位移
+      ctx.shadowOffsetY = 10;
+      ctx.shadowColor = "rgba(0,0,0,.5)";
+      ctx.shadowBlur = 4; // 模糊效果
+      ctx.strokeRect(350, 50, 100, 100);
+      ctx.fillRect(350, 200, 100, 100);
+    </script>
+  </body>
+</html>

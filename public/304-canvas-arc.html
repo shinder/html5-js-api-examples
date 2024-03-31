@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="zh">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+    />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>304-canvas-arc</title>
+    <style>
+      canvas {
+        border: 1px dashed green;
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="myCanvas" width="600" height="400"></canvas>
+    <script>
+      const myCanvas = document.querySelector("#myCanvas");
+      const ctx = myCanvas.getContext("2d");
+
+      ctx.strokeStyle = "red"; // 設定畫筆顏色
+      ctx.lineWidth = 6; // 設定畫筆粗細
+      ctx.fillStyle = "lightblue"; // 填滿的顏色
+
+      // arc(x, y, radius, startAngle, endAngle, anticlockwise);
+      // arc(圓心x, 圓心y, 半徑, 起始角度, 結束角度, 是否為逆時針方向);
+      ctx.arc(420, 60, 50, 0, Math.PI * 2); // 圓形
+      ctx.stroke();
+
+      for (let k = 0; k < 3; k++) {
+        for (let i = 0; i < 3; i++) {
+          ctx.beginPath();
+          let x = 60 + 120 * i,
+            y = 60 + 120 * k,
+            radius = 40,
+            startAngle = 0,
+            endAngle = (Math.PI / 2) * (i + 1),
+            anticlockwise = false;
+          ctx.arc(x, y, radius, startAngle, endAngle, anticlockwise);
+          switch (k) {
+            case 0:
+              ctx.stroke();
+              break;
+            case 1:
+              ctx.fill();
+              break;
+            case 2: // 扇形
+              ctx.lineTo(x, y);
+              ctx.fill();
+          }
+        }
+      }
+    </script>
+  </body>
+</html>

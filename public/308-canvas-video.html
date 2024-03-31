@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="zh">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+    />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>308-截取影片影像</title>
+  </head>
+  <body>
+    <video
+      src="media/big-buck-bunny_trailer.webm"
+      preload="auto"
+      controls
+    ></video>
+    <br />
+    <button onclick="takePic()">截取</button>
+    <br />
+    <canvas id="myCanvas"></canvas>
+
+    <script>
+      const myCanvas = document.querySelector("#myCanvas");
+      const ctx = myCanvas.getContext("2d");
+      const video = document.querySelector("video");
+
+      const takePic = () => {
+        myCanvas.setAttribute("width", video.videoWidth);
+        myCanvas.setAttribute("height", video.videoHeight);
+        ctx.drawImage(video, 0, 0);
+      };
+    </script>
+  </body>
+</html>

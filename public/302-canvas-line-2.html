@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="zh">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+    />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>302-canvas 畫線</title>
+    <style>
+      canvas {
+        border: 1px dashed green;
+      }
+    </style>
+  </head>
+  <body>
+    <form name="form1">
+      <input type="checkbox" name="isClosedPath" id="isClosedPath" />
+      <label for="isClosedPath">封閉</label> ,
+      <label for="lineCap">線段端點樣式</label>
+      <select name="lineCap" id="lineCap">
+        <option value="butt" selected>butt</option>
+        <option value="round">round</option>
+        <option value="square">square</option>
+      </select>
+      ,
+      <label for="lineJoin">端點銜接樣式</label>
+      <select name="lineJoin" id="lineJoin">
+        <option value="miter" selected>miter</option>
+        <option value="round">round</option>
+        <option value="bevel">bevel</option>
+      </select>
+    </form>
+    <canvas id="myCanvas" width="600" height="400"></canvas>
+    <script>
+      const myCanvas = document.querySelector("#myCanvas");
+      const ctx = myCanvas.getContext("2d");
+
+      const whenChange = () => {
+        let isClosedPath = document.form1.isClosedPath.checked;
+        let lineCap = document.form1.lineCap.value;
+        let lineJoin = document.form1.lineJoin.value;
+
+        ctx.clearRect(0, 0, myCanvas.width, myCanvas.height); // 清除畫布
+        ctx.beginPath(); // 重置 path
+        ctx.moveTo(50, 50);
+        ctx.lineTo(200, 300);
+        ctx.lineTo(400, 50);
+        isClosedPath ? ctx.closePath() : false;
+        ctx.strokeStyle = "orange";
+        ctx.lineWidth = 40;
+        ctx.lineCap = lineCap;
+        ctx.lineJoin = lineJoin;
+        ctx.stroke();
+
+        ctx.beginPath(); // 重置 path
+        ctx.moveTo(50, 50);
+        ctx.lineTo(200, 300);
+        ctx.lineTo(400, 50);
+        isClosedPath ? ctx.closePath() : false;
+        ctx.strokeStyle = "red";
+        ctx.lineWidth = 1;
+        ctx.lineCap = lineCap;
+        ctx.lineJoin = lineJoin;
+        ctx.stroke();
+      };
+
+      document.form1.isClosedPath.addEventListener("click", whenChange);
+      document.form1.lineCap.addEventListener("change", whenChange);
+      document.form1.lineJoin.addEventListener("change", whenChange);
+      whenChange();
+    </script>
+  </body>
+</html>
