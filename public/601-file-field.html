@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="zh">
+  <head>
+    <meta charset="UTF-8" />
+    <title>601-檔案欄位</title>
+
+    <style>
+      .container {
+        position: relative;
+        width: 800px;
+        height: 600px;
+        background-color: #b0e9ff;
+      }
+    </style>
+  </head>
+  <body>
+    <input
+      type="file"
+      id="fileFiled"
+      style="display: none"
+      multiple
+      accept="image/*"
+    />
+    <div class="container" onclick="fileFiled.click()">點擊選取檔案</div>
+
+    <script>
+      const container = document.querySelector(".container");
+      const fileFiled = document.querySelector("#fileFiled");
+
+      fileFiled.addEventListener("change", (e) => {
+        for (let f of fileFiled.files) {
+          container.innerText += `\n${f.name}`;
+        }
+      });
+    </script>
+  </body>
+</html>

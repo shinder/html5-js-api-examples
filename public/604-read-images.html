@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="zh">
+  <head>
+    <meta charset="UTF-8" />
+    <title>604-讀取圖檔</title>
+    <style>
+      .container {
+        position: relative;
+        width: 800px;
+        height: 600px;
+        background-color: #b0e9ff;
+      }
+    </style>
+  </head>
+  <body>
+    <input type="file" id="fileFiled" hidden multiple accept="image/*" />
+    <button onclick="fileFiled.click()">加入圖片</button>
+    <div class="container"></div>
+
+    <script>
+      const container = document.querySelector(".container");
+      const fileFiled = document.querySelector("#fileFiled");
+
+      const readerLoaded = (event) => {
+        let image = new Image();
+        image.height = 150;
+        image.src = event.target.result; // 將結果設定給 img
+        container.append(image);
+      };
+      fileFiled.addEventListener("change", (e) => {
+        for (let file of fileFiled.files) {
+          const reader = new FileReader();
+          reader.addEventListener("load", readerLoaded);
+          reader.readAsDataURL(file); // 非同步
+        }
+      });
+    </script>
+  </body>
+</html>

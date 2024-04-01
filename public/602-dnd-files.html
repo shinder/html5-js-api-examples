@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="zh">
+  <head>
+    <meta charset="UTF-8" />
+    <title>602-從檔案管理員拖拉檔案進來</title>
+
+    <style>
+      .container {
+        position: absolute;
+        display: flex;
+        flex-wrap: wrap;
+        width: 800px;
+        height: 600px;
+        background-color: #b0e9ff;
+      }
+      .box {
+        box-sizing: border-box;
+        width: 200px;
+        min-width: 200px;
+        height: 200px;
+        border: 1px solid gray;
+      }
+      .box img {
+        width: 100%;
+        height: 100%;
+      }
+    </style>
+  </head>
+  <body>
+    <div
+      class="container"
+      onclick="fileFiled.click()"
+      title="從檔案管理員拖拉檔案進來"
+    ></div>
+    <script>
+      const container = document.querySelector(".container");
+      container.addEventListener("dragover", (e) => {
+        e.preventDefault();
+      });
+      container.addEventListener("dragenter", function (e) {
+        container.style.backgroundColor = "#ffe055";
+      });
+      container.addEventListener("dragleave", function (e) {
+        container.style.backgroundColor = "#b0e9ff";
+      });
+      container.addEventListener("drop", function (e) {
+        e.preventDefault(); // 避免預設行為 (瀏覽器開始圖檔)
+        container.style.backgroundColor = "#b0e9ff";
+
+        for (let f of e.dataTransfer.files) {
+          // 判斷是否為圖檔
+          if (f.type.indexOf("image/") === 0) {
+            const url = URL.createObjectURL(f);
+            container.innerHTML += `<div class="box">
+              <img src="${url}" alt="${f.name}" />
+              </div>`;
+          }
+        }
+      });
+    </script>
+  </body>
+</html>

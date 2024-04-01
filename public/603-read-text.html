@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="zh">
+  <head>
+    <meta charset="UTF-8" />
+    <title>603-讀取文字檔</title>
+    <style>
+      .container {
+        position: relative;
+        width: 800px;
+        height: 600px;
+        background-color: #b0e9ff;
+      }
+    </style>
+  </head>
+  <body>
+    <input type="file" id="fileFiled" hidden accept="text/*" />
+    <button onclick="fileFiled.click()">開啟一個文字檔</button><br />
+    <textarea class="container" rows="100" cols="50"></textarea>
+
+    <script>
+      const container = document.querySelector(".container");
+      const fileFiled = document.querySelector("#fileFiled");
+
+      const readerLoaded = (event) => {
+        container.append(event.target.result);
+      };
+      fileFiled.addEventListener("change", (event) => {
+        if (!fileFiled.files.length) return;
+
+        const file = fileFiled.files[0];
+        const reader = new FileReader();
+        reader.addEventListener("load", readerLoaded);
+        reader.readAsText(file);
+      });
+    </script>
+  </body>
+</html>
