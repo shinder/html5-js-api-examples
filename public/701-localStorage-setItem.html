@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="zh">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+    />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>701-localStorage 新增項目</title>
+  </head>
+  <body>
+    <a href="701-localStorage-setItem.html">新增項目</a>
+    <a href="702-localStorage-getItem.html">列表</a>
+    <a href="703-localStorage-list.html">有刪除功能的列表</a>
+    <a href="704-localStorage-list-order-by.html">依時間排序的列表</a>
+
+    <form name="form1">
+      <label for="name">姓名</label>
+      <input type="text" name="name" id="name" required /><br />
+      <label for="age">年齡</label>
+      <input type="number" name="age" id="age" required /><br />
+      <label for="mobile">手機</label>
+      <input
+        type="text"
+        name="mobile"
+        id="mobile"
+        required
+        pattern="09\d{2}-?\d{3}-?\d{3}"
+        placeholder="09XX-XXX-XXX"
+      /><br />
+      <input type="submit" value="儲存" />
+    </form>
+    <script>
+      const prefix = "friend-book;;";
+      document.form1.onsubmit = (e) => {
+        e.preventDefault();
+        const t = Date.now(); // 當下時間 timestamp 單位毫秒數
+        let data = {
+          name: document.form1.name.value,
+          age: document.form1.age.value,
+          mobile: document.form1.mobile.value,
+          time: t,
+        };
+        localStorage.setItem(prefix + t, JSON.stringify(data));
+        document.form1.reset();
+        alert("儲存完成！");
+      };
+
+      document.querySelectorAll("a").forEach((aTag) => {
+        const h = location.href;
+        if (h.indexOf(aTag.href) >= 0) {
+          aTag.removeAttribute("href");
+          aTag.style.backgroundColor = "orange";
+        }
+      });
+    </script>
+  </body>
+</html>

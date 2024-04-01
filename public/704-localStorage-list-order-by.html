@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="zh">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+    />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>704-localStorage 依時間排序的列表</title>
+    <style>
+      table,
+      tr,
+      td {
+        border-collapse: collapse;
+        border: 1px solid gray;
+      }
+      thead {
+        background-color: #629bff;
+      }
+      tbody > tr:nth-child(2n) {
+        background-color: #8dd0ff;
+      }
+    </style>
+  </head>
+  <body>
+    <a href="701-localStorage-setItem.html">新增項目</a>
+    <a href="702-localStorage-getItem.html">列表</a>
+    <a href="703-localStorage-list.html">有刪除功能的列表</a>
+    <a href="704-localStorage-list-order-by.html">依時間排序的列表</a>
+
+    <table>
+      <thead>
+        <tr>
+          <td>刪除</td>
+          <td>姓名</td>
+          <td>年齡</td>
+          <td>手機</td>
+        </tr>
+      </thead>
+      <tbody id="the-list"></tbody>
+    </table>
+    <script>
+      const prefix = "friend-book;;";
+      const tbody = document.querySelector("#the-list");
+      let bData = [];
+      const showList = () => {
+        bData = [];
+
+        for (let i = 0; i < localStorage.length; i++) {
+          let key = localStorage.key(i);
+          if (key.indexOf(prefix) === 0) {
+            let item = localStorage.getItem(key);
+            item = JSON.parse(item);
+            item.key = key;
+            bData.push(item);
+          }
+        }
+        // 排序
+        bData.sort((a, b) => {
+          return a.time - b.time;
+        });
+        let str = "";
+        for (let i of bData) {
+          str += `<tr>
+<td><button onclick="removeItem('${i.key}')">X</button></td>
+<td>${i.name}</td><td>${i.age}</td><td>${i.mobile}</td>
+</tr>`;
+        }
+        tbody.innerHTML = str;
+      };
+      showList();
+
+      const removeItem = (key) => {
+        if (!confirm("確定要移除項目？")) return;
+        localStorage.removeItem(key);
+        showList();
+      };
+
+      document.querySelectorAll("a").forEach((aTag) => {
+        const h = location.href;
+        if (h.indexOf(aTag.href) >= 0) {
+          aTag.removeAttribute("href");
+          aTag.style.backgroundColor = "orange";
+        }
+      });
+    </script>
+  </body>
+</html>

@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="zh">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+    />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>705-localStorage 儲存圖片</title>
+    <style>
+      canvas {
+        border: 1px dashed green;
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="myCanvas" width="600" height="400"></canvas>
+    <br />
+    <input type="color" id="pColor" value="#0000FF" />
+    <input type="number" min="1" max="50" step="1" id="pSize" value="5" /> -
+    <button onclick="clearCanvas()">清空重置</button> -
+    <button onclick="saveCanvas()">儲存</button>
+    <br />載入
+    <select id="listCombo" onchange="loadCanvas(this.value)"></select>
+    <script>
+      const myCanvas = document.querySelector("#myCanvas"),
+        pColor = document.querySelector("#pColor"),
+        pSize = document.querySelector("#pSize"),
+        ctx = myCanvas.getContext("2d");
+      const listCombo = document.querySelector("#listCombo");
+      ctx.lineCap = "round";
+      ctx.lineJoin = "round";
+
+      const mDown = (event) => {
+        window.addEventListener("mouseup", mUp);
+        myCanvas.addEventListener("mousemove", mMove);
+        ctx.beginPath();
+        ctx.moveTo(event.offsetX, event.offsetY);
+      };
+      const mUp = (event) => {
+        window.removeEventListener("mouseup", mUp);
+        myCanvas.removeEventListener("mousemove", mMove);
+      };
+      const mMove = (event) => {
+        ctx.lineTo(event.offsetX, event.offsetY);
+        ctx.stroke();
+      };
+      myCanvas.addEventListener("mousedown", mDown);
+
+      // 設置畫筆大小顏色
+      const setPen = () => {
+        ctx.strokeStyle = pColor.value;
+        ctx.lineWidth = pSize.value;
+      };
+      pColor.addEventListener("change", setPen);
+      pSize.addEventListener("change", setPen);
+      setPen();
+
+      const clearCanvas = () => {
+        ctx.clearRect(0, 0, myCanvas.width, myCanvas.height);
+      };
+
+      let drawItems;
+      // 列出所有符合的項目
+      const listSavedItems = () => {
+        drawItems = []; // reset
+        for (let i = 0; i < localStorage.length; i++) {
+          let key = localStorage.key(i);
+          let keyAr = key.split(";;");
+          if (keyAr.length === 2 && keyAr[0] === "shinder-draw") {
+            drawItems.push({
+              key: key,
+              date: new Date(keyAr[1] * 1).toLocaleString(),
+            });
+          }
+        }
+        return drawItems;
+      };
+
+      // 儲存項目
+      const saveCanvas = () => {
+        const imgTxt = myCanvas.toDataURL("image/png");
+        let key = "shinder-draw;;" + Date.now();
+        localStorage.setItem(key, imgTxt);
+        alert("儲存完成");
+        renewList();
+      };
+
+      // 更新已儲存的列表
+      const renewList = () => {
+        let list = listSavedItems();
+        listCombo.innerHTML =
+          '<option value=""> -- 選擇載入的項目 -- </option>';
+        for (let item of list) {
+          listCombo.innerHTML += `<option value="${item.key}">${item.date}</option>`;
+        }
+      };
+      renewList();
+
+      // 載入項目
+      const loadCanvas = (key) => {
+        if (!key) return;
+        clearCanvas();
+        const img = new Image();
+        img.onload = () => {
+          ctx.drawImage(img, 0, 0);
+        };
+        img.src = localStorage.getItem(key);
+      };
+    </script>
+  </body>
+</html>
