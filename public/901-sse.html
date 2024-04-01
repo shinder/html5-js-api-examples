@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="zh">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+    />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>901-Server Sent Event</title>
+  </head>
+  <body>
+    <div id="info">123</div>
+    <script>
+      const info = document.querySelector("#info");
+      const es = new EventSource("/try-sse");
+
+      es.addEventListener("open", (e) => {
+        info.style.backgroundColor = "orange";
+        console.log(new Date().toLocaleString(), e);
+      });
+      es.addEventListener("message", (e) => {
+        info.innerHTML = `${e.lastEventId}: ${e.data}`;
+      });
+      es.addEventListener("error", (e) => {
+        console.log(new Date().toLocaleString(), e);
+      });
+    </script>
+  </body>
+</html>

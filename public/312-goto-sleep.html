@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="zh">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+    />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+      }
+      body {
+        overflow: hidden;
+      }
+    </style>
+    <title>睡不著嗎？ shinder.lin</title>
+  </head>
+  <body>
+    <canvas id="myCanvas"></canvas>
+
+    <script>
+      const myCanvas = document.querySelector("#myCanvas");
+      const ctx = myCanvas.getContext("2d");
+      myCanvas.width = window.innerWidth;
+      myCanvas.height = window.innerHeight;
+      const cx = myCanvas.width / 2;
+      const cy = myCanvas.height / 2;
+
+      const strokeCircle = function (ctx, cx, cy, r) {
+        ctx.beginPath();
+        ctx.arc(cx, cy, r, 0, Math.PI * 2);
+        ctx.stroke();
+      };
+
+      ctx.fillStyle = "gray";
+      ctx.strokeStyle = "#878686"; // 設定畫筆顏色
+      ctx.lineWidth = 20;
+
+      let diff = 1;
+      function myDraw() {
+        let i = 10 + diff;
+        i %= 30;
+        for (; i < 1200; i += 30) {
+          strokeCircle(ctx, cx, cy, i);
+        }
+      }
+
+      setInterval(function () {
+        diff += 1;
+        ctx.clearRect(0, 0, myCanvas.width, myCanvas.height);
+        myDraw();
+      }, 30);
+    </script>
+  </body>
+</html>
