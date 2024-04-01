@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>711-sessionStorage</title>
+  </head>
+  <body>
+    <div id="info"></div>
+    <br />
+    <a href="712-sessionStorage-2.html">next</a>
+    <script>
+      const info = document.querySelector("#info");
+      info.innerHTML = sessionStorage.getItem('s-key');
+      const str = "Hello ~~";
+
+      sessionStorage.setItem("s-key", str);
+    </script>
+  </body>
+</html>
