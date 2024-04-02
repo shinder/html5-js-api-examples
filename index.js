@@ -1,6 +1,9 @@
 import express from "express";
 import serveIndex from "serve-index";
 import fs from "node:fs/promises";
+import "./routes/ws-echo.js";
+import "./routes/ws-chat.js";
+import "./routes/ws-draw.js";
 import upload from "./routes/upload-img-module.js";
 
 const web_port = 3031;

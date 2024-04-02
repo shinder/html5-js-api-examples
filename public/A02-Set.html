@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="zh">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>A02-Set 類型</title>
+  </head>
+  <body>
+    <script>
+      const set = new Set(); // key: 可以是所有類型的物件
+      const obj = { name: "bill" };
+      const f1 = () => {};
+
+      set.add(obj);
+      set.add(obj);
+      set.add(f1);
+      console.log(set.size); //  數量
+
+      console.log([...set.keys()]); // 取得所有的 key 並轉換成陣列
+      // 以迴圈的方式取出 value
+      set.forEach((v, k) => {
+        console.log({ v, k });
+      });
+    </script>
+  </body>
+</html>

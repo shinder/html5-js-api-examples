@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="zh">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>A01-Map 類型</title>
+  </head>
+  <body>
+    <script>
+      const obj = { name: "bill" }; // key: 字串, Symbol
+      const f1 = () => {};
+      const map = new Map(); // key: 可以是所有類型的物件
+
+      map.set({}, 123);
+      map.set({}, 456);
+      map.set(obj, "abc");
+      map.set(obj, [1, 2, 3]);
+      map.set(f1, "函式");
+
+      console.log(map.size); // 鍵值對 數量
+      console.log(map.get(obj)); // 取得對應的值
+      console.log([...map.keys()]); // 取得所有的 key 並轉換成陣列
+      // 以迴圈的方式取出 value 和 key
+      map.forEach((v, k) => {
+        console.log({ v, k });
+      });
+    </script>
+  </body>
+</html>
