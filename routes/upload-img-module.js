@@ -15,8 +15,8 @@ const fileFilter = (req, file, cb) => {
 
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
-    // 儲存的資料夾
-    cb(null, "public/imgs");
+    // 儲存檔案的資料夾位置
+    cb(null, "public/images");
   },
   filename: (req, file, cb) => {
     // 隨機決定檔名

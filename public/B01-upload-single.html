@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="zh">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>B01-Ajax upload single</title>
+  </head>
+  <body>
+    <form name="form1" onsubmit="ajaxUpload(event)">
+      <label for="user">姓名</label>
+      <input type="text" name="user" id="user" /><br />
+      <label for="avatar">大頭貼</label>
+      <input type="file" name="avatar" id="avatar" accept="image/*" /><br />
+      <img src="" alt="" id="avatar-img" width="300px" /><br />
+      <label for="description">簡介</label><br />
+      <textarea name="description" id="description" cols="50"></textarea><br />
+      <button type="submit">上傳</button>
+    </form>
+    <script>
+      const avatarImg = document.querySelector("#avatar-img");
+      // 取得原有的內容
+      fetch("/profile.json")
+        .then((r) => r.json())
+        .then((obj) => {
+          user.value = obj.user || "";
+          avatarImg.src = obj.avatar || "";
+          description.value = obj.description || "";
+        })
+        .catch((ex) => console.log("ex:", ex));
+
+      // 選擇檔案時預覽
+      avatar.addEventListener("change", (e) => {
+        if (avatar.files[0]) {
+          avatarImg.src = URL.createObjectURL(avatar.files[0]);
+        } else {
+          avatarImg.src = "";
+        }
+      });
+
+      const ajaxUpload = () => {
+        const fd = new FormData(document.form1);
+        fetch("/uploads/profile", {
+          method: "POST",
+          body: fd,
+        })
+          .then((r) => r.json())
+          .then((obj) => console.log(obj));
+        return false;
+      };
+    </script>
+  </body>
+</html>
