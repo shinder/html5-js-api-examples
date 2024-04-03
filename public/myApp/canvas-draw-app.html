@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="zh">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+    />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <link rel="manifest" href="./manifest.json" />
+    <title>My Draw App</title>
+    <style>
+      canvas {
+        border: 1px dashed green;
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="myCanvas" width="512" height="512"></canvas>
+    <br />
+    <input type="color" id="pColor" value="#0000FF" />
+    <input type="number" min="1" max="50" step="1" id="pSize" value="10" /> -
+    <button onclick="clearCanvas()">清空重置</button> -
+    <button onclick="saveCanvas()">儲存</button>
+    <script>
+      const myCanvas = document.querySelector("#myCanvas"),
+        pColor = document.querySelector("#pColor"),
+        pSize = document.querySelector("#pSize"),
+        ctx = myCanvas.getContext("2d");
+      ctx.lineCap = "round";
+      ctx.lineJoin = "round";
+
+      const mDown = (event) => {
+        window.addEventListener("mouseup", mUp);
+        myCanvas.addEventListener("mousemove", mMove);
+        ctx.beginPath();
+        ctx.moveTo(event.offsetX, event.offsetY);
+      };
+      const mUp = (event) => {
+        window.removeEventListener("mouseup", mUp);
+        myCanvas.removeEventListener("mousemove", mMove);
+      };
+      const mMove = (event) => {
+        ctx.lineTo(event.offsetX, event.offsetY);
+        ctx.stroke();
+      };
+      myCanvas.addEventListener("mousedown", mDown);
+
+      // 設置畫筆大小顏色
+      const setPen = () => {
+        ctx.strokeStyle = pColor.value;
+        ctx.lineWidth = pSize.value;
+      };
+      pColor.addEventListener("change", setPen);
+      pSize.addEventListener("change", setPen);
+      setPen();
+
+      const clearCanvas = () => {
+        ctx.clearRect(0, 0, myCanvas.width, myCanvas.height);
+      };
+      const saveCanvas = () => {
+        const image = myCanvas.toDataURL("image/png");
+
+        let a = document.createElement("a");
+        a.setAttribute("download", "draw.png");
+        a.setAttribute("href", image);
+        a.click();
+      };
+
+      if ("serviceWorker" in navigator) {
+        navigator.serviceWorker
+          .register("service-worker.js")
+          .then((reg) => {
+            console.log("註冊成功：" + reg);
+          })
+          .catch((err) => {
+            console.log("註冊失敗：" + err);
+          });
+      }
+    </script>
+  </body>
+</html>
