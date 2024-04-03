@@ -7,7 +7,7 @@
     <title>B01-Ajax upload single</title>
   </head>
   <body>
-    <form name="form1" onsubmit="ajaxUpload(event)">
+    <form name="form1">
       <label for="user">姓名</label>
       <input type="text" name="user" id="user" /><br />
       <label for="avatar">大頭貼</label>
@@ -21,7 +21,9 @@
       const avatarImg = document.querySelector("#avatar-img");
       // 取得原有的內容
       fetch("/profile.json")
-        .then((r) => r.json())
+        .then((r) => {
+          return r.ok ? r.json() : {};
+        })
         .then((obj) => {
           user.value = obj.user || "";
           avatarImg.src = obj.avatar || "";
@@ -31,22 +33,21 @@
 
       // 選擇檔案時預覽
       avatar.addEventListener("change", (e) => {
+        avatarImg.src = "";
         if (avatar.files[0]) {
           avatarImg.src = URL.createObjectURL(avatar.files[0]);
-        } else {
-          avatarImg.src = "";
         }
       });
-
-      const ajaxUpload = () => {
+      // 以 AJAX 送出表單資料
+      document.form1.onsubmit = (e) => {
+        e.preventDefault();
         const fd = new FormData(document.form1);
         fetch("/uploads/profile", {
           method: "POST",
           body: fd,
         })
           .then((r) => r.json())
-          .then((obj) => console.log(obj));
-        return false;
+          .then((obj) => alert("上傳完成"));
       };
     </script>
   </body>

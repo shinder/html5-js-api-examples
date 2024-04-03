@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>B02-Ajax upload multiple</title>
+  </head>
+  <body>
+    <form action="" name="form1" onsubmit="return false;">
+      <label for="photos">選了就上傳</label>
+      <input
+        type="file"
+        name="photos"
+        id="photos"
+        accept="image/*"
+        multiple
+      /><br />
+      <div id="img-container"></div>
+      <textarea
+        name="description"
+        id="description"
+        cols="80" rows="10"
+        readonly
+      ></textarea>
+    </form>
+    <script>
+      const imgContainer = document.querySelector("#img-container");
+      photos.addEventListener("change", (event) => {
+        const fd = new FormData(document.form1);
+        fetch("/uploads/photos", {
+          method: "POST",
+          body: fd,
+        })
+          .then((r) => r.json())
+          .then((ar) => {
+            description.value = JSON.stringify(ar, null, 4);
+            let str = "";
+            ar.forEach((el) => {
+              str += `<img src="${el}" alt="" width="300px">`;
+            });
+            imgContainer.innerHTML = str;
+          });
+      });
+    </script>
+  </body>
+</html>

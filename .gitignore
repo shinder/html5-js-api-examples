@@ -1,6 +1,9 @@
 
 node_modules
 
+public/images
+public/profile.json
+
 .vscode
 .idea
 package-lock.json

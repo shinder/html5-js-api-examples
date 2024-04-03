@@ -9,8 +9,8 @@ import upload from "./routes/upload-img-module.js";
 const web_port = 3031;
 const app = express();
 
-app.use(express.static("public"));
-app.use("/", serveIndex("public", { icons: true }));
+app.use(express.urlencoded({ extended: true }));
+app.use(express.json());
 
 app.get("/try-sse", (req, res) => {
   let id = 30;
@@ -28,6 +28,7 @@ app.get("/try-sse", (req, res) => {
 
 // 處理個人資料的表單
 app.post("/uploads/profile", upload.single("avatar"), async (req, res) => {
+  console.log(req.body);
   let data = {}; // 要存檔的資料
   try {
     const d = await fs.readFile("./public/profile.json");
@@ -46,6 +47,20 @@ app.post("/uploads/profile", upload.single("avatar"), async (req, res) => {
   }
   res.json({ success: true, data });
 });
+
+app.post('/uploads/photos', upload.array('photos'), (req, res) =>{
+	const output = [];
+	req.files.forEach(file=>{
+		output.push('/images/' + file.filename);
+	});
+	res.json(output);
+});
+
+app.use(express.static("public"));
+
+// 要放在所有路由之後
+app.use("/", serveIndex("public", { icons: true }));
+
 
 app.listen(web_port, () => {
   console.log(`伺服器啟動於通訊埠：${web_port}`);
