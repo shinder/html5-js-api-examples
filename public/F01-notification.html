@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>F01-Notification</title>
+  </head>
+  <body>
+    <button style="display: none">show a notification</button>
+    <script>
+      const checkNotification = function () {
+        console.log(Notification.permission);
+        switch (Notification.permission) {
+          case "granted": // 允許
+            btn.style.display = "block";
+            break;
+          case "denied": // 封鎖
+            break;
+          default: // 未決定
+            // 要求權限
+            Notification.requestPermission(function () {
+              if (Notification.permission === "granted") {
+                btn.style.display = "block";
+              }
+            });
+        }
+      };
+      checkNotification();
+
+      const btn = document.querySelector("button");
+      // 發送提示
+      btn.onclick = function () {
+        let ntf = new Notification("MyTitle", {
+          body: "說明文字",
+          icon: "./myApp/images/icons/icon-144x144.png",
+        });
+      };
+    </script>
+  </body>
+</html>

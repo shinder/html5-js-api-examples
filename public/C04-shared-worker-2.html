@@ -15,7 +15,7 @@
       worker.port.onmessage = (event) => {
         const data = event.data;
         const pn = data.primeNumbers[data.primeNumbers.length - 1];
-        info.innerHTML = `${data.action} - 質數：${pn}, ${data.runningTime} msec`;
+        info.innerHTML = `${data.action} - 最大質數：${pn}, ${data.runningTime} msec`;
       };
 
       worker.port.postMessage("page-2");

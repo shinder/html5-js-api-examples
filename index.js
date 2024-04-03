@@ -48,19 +48,18 @@ app.post("/uploads/profile", upload.single("avatar"), async (req, res) => {
   res.json({ success: true, data });
 });
 
-app.post('/uploads/photos', upload.array('photos'), (req, res) =>{
-	const output = [];
-	req.files.forEach(file=>{
-		output.push('/images/' + file.filename);
-	});
-	res.json(output);
+app.post("/uploads/photos", upload.array("photos"), (req, res) => {
+  const output = [];
+  req.files.forEach((file) => {
+    output.push("/images/" + file.filename);
+  });
+  res.json(output);
 });
 
 app.use(express.static("public"));
 
 // 要放在所有路由之後
 app.use("/", serveIndex("public", { icons: true }));
-
 
 app.listen(web_port, () => {
   console.log(`伺服器啟動於通訊埠：${web_port}`);
