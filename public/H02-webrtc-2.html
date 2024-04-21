@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>呼叫者</title>
+  </head>
+  <body>
+    <video id="myVideo" autoplay="true"></video>
+    <br />
+    <input type="text" id="remoteId" style="width: 100%" />
+    <button id="connect_btn">connect</button>
+    <br />
+    <video id="remoteVideo" autoplay="true"></video>
+
+    <script type="module">
+      import { Peer } from "https://esm.sh/peerjs@1.5.2?bundle-deps";
+
+      const peer = new Peer();
+      let myStream; // 自己的影像來源
+
+      const connectRemote = () => {
+        // 影像連線呼叫
+        const call = peer.call(remoteId.value, myStream);
+        // 對方提供影象時
+        call.on("stream", function (remoteStream) {
+          remoteVideo.srcObject = remoteStream;
+        });
+      };
+      // 按下按鈕呼叫 connectRemote() 用以呼叫遠端用戶
+      connect_btn.addEventListener("click", connectRemote);
+
+      peer.on("open", (id) => {
+        console.log({ id });
+      });
+
+      // 取得 web cam 串流
+      const getUserMedia =
+        navigator.getUserMedia ||
+        navigator.webkitGetUserMedia ||
+        navigator.mozGetUserMedia;
+      getUserMedia(
+        { video: true, audio: true },
+        function (stream) {
+          myVideo.srcObject = stream;
+          myStream = stream;
+        },
+        function (err) {
+          console.log("無法取得 web cam 串流", err);
+        }
+      );
+    </script>
+  </body>
+</html>
