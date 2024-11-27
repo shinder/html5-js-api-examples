@@ -7,10 +7,10 @@
       content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
     />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <title>AI-chat-1</title>
+    <title>LM-Studio-chat-1</title>
   </head>
   <body>
-    <!-- J01-ai-chat-1.html -->
+    <!-- J01-LM-Studio-chat-1.html -->
     <input type="text" id="chat" value="iphone手機有什麼特色？" />
     <button onclick="startAsk()">開始</button>
     <div id="result_div"></div>
@@ -63,12 +63,12 @@
             break;
           }
           try {
-            const startIndex = line.indexOf("{");
-            const endIndex = line.lastIndexOf("}");
-            const json = line.slice(startIndex, endIndex + 1); // 取得 JSON 字串
-            const obj = JSON.parse(json);
-            if(obj.choices[0].delta.content){
-              result_div.innerText += obj.choices[0].delta.content;
+            if (line.indexOf("data: ") === 0) {
+              const json = line.slice(6); // 取得 JSON 字串
+              const obj = JSON.parse(json);
+              if (obj.choices[0].delta.content) {
+                result_div.innerText += obj.choices[0].delta.content;
+              }
             }
           } catch (ex) {
             console.log(ex);
