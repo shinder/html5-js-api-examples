@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="zh">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0"
+    />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>J02-Ollama-chat-1</title>
+  </head>
+  <body>
+    <!-- J02-Ollama-chat-1.html -->
+    <input type="text" id="chat" value="iphone手機有什麼特色？" />
+    <button onclick="startAsk()">開始</button>
+    <div id="result_div"></div>
+    <script>
+      const chat = document.querySelector("#chat");
+      const result_div = document.querySelector("#result_div");
+      const AI_ROLE = "<角色>您是一個出色的3C產品介紹人員，會使用正體中文回答</角色>";
+
+      const startAsk = async () => {
+        const data = {
+          model: "gemma2:2b",
+          messages: [
+            { role: "system", content: AI_ROLE },
+            {
+              role: "user",
+              content: chat.value,
+            },
+          ],
+          temperature: 0.7,
+          max_tokens: -1,
+          stream: true,
+        };
+
+        const response = await fetch(
+          `http://localhost:11434/v1/chat/completions`,
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(data),
+          }
+        );
+        if (!response.ok) {
+          console.log("回應發生錯誤!!!");
+          return;
+        }
+
+        console.log(...response.headers);
+
+        const reader = response.body.getReader(); // 讀取器
+        const decoder = new TextDecoder("utf8"); // 解碼器
+
+        while (true) {
+          const { value, done } = await reader.read();
+
+          const line = decoder.decode(value); // 基本上每一行都包含 json
+          console.log(line);
+          if (done || !line.trim()) {
+            result_div.innerText += "\n\n";
+            break;
+          }
+          try {
+            if (line.indexOf("data: ") === 0) {
+              const json = line.slice(6); // 取得 JSON 字串
+              const obj = JSON.parse(json);
+              if (obj.choices[0].delta.content) {
+                result_div.innerText += obj.choices[0].delta.content;
+              }
+            }
+          } catch (ex) {
+            console.log(ex);
+          }
+        }
+      };
+    </script>
+  </body>
+</html>
