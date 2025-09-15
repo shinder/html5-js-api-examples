@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="zh">
+  <head>
+    <title>L040 偵看當前位置</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <style>
+      #map {
+        height: 500px;
+        width: 100%;
+      }
+    </style>
+  </head>
+  <body>
+    <h2>L040 偵看當前位置</h2>
+    <div id="map"></div>
+
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script>
+      /* *** 因為安全性的限制只能在 localhost 或 https 環境下執行 *** */
+      const taipei101 = [25.033, 121.5654];
+      const map = L.map("map").setView(taipei101, 13);
+      // 添加 OSM 圖層
+      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        maxZoom: 15,
+        attribution:
+          '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+      }).addTo(map);
+
+      // 位置追蹤
+      function startLocationTracking() {
+        if ("geolocation" in navigator) {
+          const options = {
+            enableHighAccuracy: true,
+            timeout: 5000,
+            maximumAge: 0,
+          };
+          // 偵看位置的變動
+          navigator.geolocation.watchPosition(
+            (position) => {
+              const lat = position.coords.latitude;
+              const lon = position.coords.longitude;
+              console.log({lat, lon});
+              
+              // 更新地圖中心
+              map.setView([lat, lon], 16);
+
+              // 添加或更新位置標記
+              if (window.currentLocationMarker) {
+                map.removeLayer(window.currentLocationMarker);
+              }
+
+              window.currentLocationMarker = L.marker([lat, lon])
+                .addTo(map)
+                .bindPopup("您的當前位置")
+                .openPopup();
+            },
+            (error) => {
+              console.error("GPS 錯誤:", error);
+            },
+            options
+          );
+        } else {
+          alert("您的瀏覽器不支援地理位置功能");
+        }
+      }
+      // 啟動位置追蹤
+      startLocationTracking();
+    </script>
+  </body>
+</html>

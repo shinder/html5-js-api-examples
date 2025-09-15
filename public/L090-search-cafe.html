@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="zh">
+  <head>
+    <title>090 搜尋台北市的咖啡店</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <style>
+      #map {
+        height: 500px;
+        width: 100%;
+      }
+    </style>
+  </head>
+  <body>
+    <h2>090 搜尋台北市的咖啡店</h2>
+    <div id="map"></div>
+
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script>
+      // 使用範例：在地圖上顯示咖啡店
+      const taipei_bbox = "25.0,121.5,25.1,121.6"; // 台北市範圍
+      // 初始化地圖
+      const map = L.map("map").setView([25.033, 121.5654], 13); // 台北市
+
+      // 添加 OSM 圖層
+      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        maxZoom: 19,
+        attribution:
+          '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+      }).addTo(map);
+
+      // 查詢台北市的咖啡店
+      async function queryCafes(bbox) {
+        const url = "https://overpass-api.de/api/interpreter";
+        const query = `
+        [out:json][timeout:25];
+        (
+            node["amenity"="cafe"](${bbox});
+            way["amenity"="cafe"](${bbox});
+            relation["amenity"="cafe"](${bbox});
+        );
+        out center;
+        `;
+
+        try {
+          const response = await fetch(url, {
+            method: "POST",
+            body: "data=" + encodeURIComponent(query),
+          });
+
+          const data = await response.json();
+          console.log(data);
+
+          return data.elements;
+        } catch (error) {
+          console.error("Overpass API 錯誤:", error);
+          return [];
+        }
+      }
+
+      queryCafes(taipei_bbox).then((cafes) => {
+        cafes.forEach((cafe) => {
+          let lat, lon;
+
+          if (cafe.type === "node") {
+            lat = cafe.lat;
+            lon = cafe.lon;
+          } else if (cafe.center) {
+            lat = cafe.center.lat;
+            lon = cafe.center.lon;
+          }
+
+          if (lat && lon) {
+            const name = cafe.tags?.name || "咖啡店";
+            L.marker([lat, lon]).addTo(map).bindPopup(`☕ ${name}`);
+          }
+        });
+      });
+    </script>
+  </body>
+</html>

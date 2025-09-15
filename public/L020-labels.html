@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="zh">
+  <head>
+    <title>L020 地圖標示</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <style>
+      #map {
+        height: 500px;
+        width: 100%;
+      }
+    </style>
+  </head>
+  <body>
+    <h2>L020 地圖標示</h2>
+    <div id="map"></div>
+
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script>
+      const taipei101 = [25.033, 121.5654]; // [緯度, 經度]
+      // 初始化地圖 (台北市 101)
+      const map = L.map("map").setView(taipei101, 13);
+
+      // 添加 OSM 圖層
+      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        maxZoom: 15,
+        attribution:
+          '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+      }).addTo(map);
+
+      // 自訂圖標
+      const customIcon = L.icon({
+        iconUrl: "./images/mario.gif",
+        // shadowUrl: "./images/marker-shadow.png",
+        iconSize: [40, 40],
+        iconAnchor: [20, 40],
+        popupAnchor: [0, -34],
+        // shadowSize: [41, 41],
+      });
+
+      // 添加標記
+      const marker = L.marker(taipei101, { icon: customIcon })
+        .addTo(map)
+        .bindPopup("<b>台北 101</b><br>台北市信義區")
+        .openPopup(); // 直接開啟標示的泡泡框
+
+      // 加入比例尺
+      const scale = L.control
+        .scale({
+          metric: true,    // 顯示公制 (公里/公尺)
+          imperial: false, // 是否顯示英制 (英里/英尺)
+          maxWidth: 200,   // 比例尺的最大寬度(px)
+        })
+        .addTo(map);
+
+      // 添加標示圓形區域
+      const circle = L.circle([25.033, 121.5654], {
+        color: "orange",
+        fillColor: "yellow",
+        fillOpacity: 0.5,
+        radius: 500, // 單位為公尺
+      }).addTo(map);
+
+    </script>
+  </body>
+</html>

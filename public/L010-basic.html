@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="zh">
+  <head>
+    <title>L010 基本地圖設置</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <style>
+      #map {
+        height: 500px;
+        width: 100%;
+      }
+    </style>
+  </head>
+  <body>
+    <h2>L010 基本地圖設置</h2>
+    <div id="map"></div>
+
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script>
+      const taipei101 = [25.033, 121.5654]; // [緯度, 經度]
+      // 初始化地圖 (台北市 101)
+      // setView(地圖中心點座標, 縮放比例)
+      const map = L.map("map").setView(taipei101, 13);
+      // Leaflet 的 zoom 是「地圖瓦片層級」，不是直接的比例尺；
+      // zoom 數字越大 → 放大越近 → 比例尺越小（細緻）。
+      // 這裡 zoom = 13，大約是城市街區等級（1:50,000 左右）
+
+      // 添加 OSM 圖層
+      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        maxZoom: 15,
+        attribution:
+          '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+      }).addTo(map);
+
+      // 添加標記
+      const marker = L.marker(taipei101).addTo(map);
+    </script>
+  </body>
+</html>

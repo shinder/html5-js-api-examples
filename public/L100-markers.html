@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="zh">
+  <head>
+    <title>L100 多個圖標</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <style>
+      #map {
+        height: 500px;
+        width: 100%;
+      }
+    </style>
+  </head>
+  <body>
+    <h2>L100 多個圖標</h2>
+    <div id="map"></div>
+
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script>
+      const taipei101 = [25.033, 121.5654]; // [緯度, 經度]
+      // 初始化地圖 (台北市 101)
+      const map = L.map("map").setView(taipei101, 13);
+
+      // 添加 OSM 圖層
+      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        maxZoom: 15,
+        attribution:
+          '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+      }).addTo(map);
+
+      fetch(`data/cafes.json`)
+        .then((r) => r.json())
+        .then((result) => {
+          result.elements.forEach((cafe) => {
+            if (cafe.type === "node") {
+              const name = cafe.tags?.name || "咖啡店";
+              const marker = L.marker([cafe.lat, cafe.lon])
+                .addTo(map)
+                .bindPopup(`☕ ${name}`);
+            }
+          });
+        });
+    </script>
+  </body>
+</html>

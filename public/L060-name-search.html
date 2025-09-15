@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="zh">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>060 名稱搜尋</title>
+  </head>
+  <body>
+    <h2>060 名稱搜尋</h2>
+    <input type="text" id="myInput" value="台北車站" placeholder="明確的地名"/>
+    <button onclick="findLoc()">名稱搜尋</button><br />
+    <pre id="info"></pre>
+
+    <script>
+      // 使用 Nominatim API 進行搜尋
+      async function geocode(address) {
+        const url = `https://nominatim.openstreetmap.org/search?format=json&q=${address}`;
+
+        try {
+          const response = await fetch(url);
+          const data = await response.json();
+          console.log(data);
+          info.innerHTML = JSON.stringify(data, null, 4);
+          if (data.length > 0) {
+            const result = data[0];
+            return {
+              lat: parseFloat(result.lat),
+              lon: parseFloat(result.lon),
+              display_name: result.display_name,
+            };
+          }
+        } catch (error) {
+          console.error("地理編碼錯誤:", error);
+        }
+
+        return null;
+      }
+      const findLoc = () => {
+        const name = document.querySelector("#myInput").value;
+        // 使用範例
+        geocode(name).then((result) => {
+          console.log(result);
+        });
+      };
+    </script>
+  </body>
+</html>

@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="zh">
+  <head>
+    <title>L110 選單到圖標</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <style>
+      * {
+        box-sizing: border-box;
+      }
+      .container {
+        display: flex;
+      }
+      .list {
+        display: flex;
+        flex-direction: column;
+        width: 300px;
+      }
+      .list .item {
+        margin: 2px 0;
+        width: 95%;
+        height: 2rem;
+        text-align: center;
+        line-height: 2rem;
+        border-radius: 5px;
+        background-color: rgb(241, 178, 90);
+        color: white;
+        cursor: pointer;
+      }
+      .list .item:hover {
+        background-color: rgb(239, 162, 52);
+      }
+      #map {
+        height: 500px;
+        width: calc(100% - 300px);
+      }
+    </style>
+  </head>
+  <body>
+    <h2>L110 選單到圖標</h2>
+    <div class="container">
+      <div class="list"></div>
+      <div id="map"></div>
+    </div>
+
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script>
+      const list = document.querySelector(".list");
+      const taipei101 = [25.033, 121.5654]; // [緯度, 經度]
+      // 初始化地圖 (台北市 101)
+      const map = L.map("map").setView(taipei101, 13);
+      let elements;
+      const menuMap = new Map();
+
+      // 添加 OSM 圖層
+      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        maxZoom: 19,
+        attribution:
+          '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+      }).addTo(map);
+
+      const genMenu = () => {
+        let count = 20;
+        elements.sort(() => Math.random() - 0.5); // 隨機排序
+        for (cafe of elements) {
+          if (cafe.type === "node") {
+            const name = cafe.tags?.name || "咖啡店";
+
+            const marker = L.marker([cafe.lat, cafe.lon])
+              .addTo(map)
+              .bindPopup(`☕  ${name}`);
+            const item = document.createElement("div");
+            item.className = "item";
+            item.innerText = name;
+            list.append(item);
+            menuMap.set(item, {
+              lat: cafe.lat, 
+              lon: cafe.lon,
+              item,
+              marker,
+            });
+            count--;
+          }
+          if (count <= 0) {
+            break;
+          }
+        }
+      };
+      list.addEventListener("click", (e) => {
+        const t = e.target;
+        const data = menuMap.get(t);
+        if(!data) return;
+        const {lat, lon, item, marker} = data;
+        marker.openPopup();
+        map.setView([lat, lon], 16);
+        
+      });
+      fetch(`data/cafes.json`)
+        .then((r) => r.json())
+        .then((result) => {
+          elements = result.elements;
+          genMenu();
+        });
+    </script>
+  </body>
+</html>

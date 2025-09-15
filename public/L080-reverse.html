@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="zh">
+  <head>
+    <title>080 反向查地址</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+    <style>
+      #map {
+        height: 500px;
+        width: 100%;
+      }
+    </style>
+  </head>
+  <body>
+    <h2>080 反向查地址</h2>
+    <div id="map"></div>
+
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script>
+      const taipei101 = [25.033, 121.5654]; // [緯度, 經度]
+      // 初始化地圖 (台北市 101)
+      const map = L.map("map").setView(taipei101, 15);
+
+      // 添加 OSM 圖層
+      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        maxZoom: 19,
+        attribution:
+          '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+      }).addTo(map);
+
+      // 反向地理編碼：從座標取得地址
+      async function reverseGeocode(lat, lon) {
+        const url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lon}&zoom=18&addressdetails=1`;
+
+        try {
+          const response = await fetch(url);
+          const data = await response.json();
+          console.log(data);
+
+          return data;
+        } catch (error) {
+          console.error("反向地理編碼錯誤:", error);
+          return null;
+        }
+      }
+
+      // 地圖點擊事件
+      map.on("click", async (e) => {
+        const { lat, lng } = e.latlng;
+        const address = await reverseGeocode(lat, lng);
+
+        if (address) {
+          L.popup()
+            .setLatLng(e.latlng)
+            .setContent(
+              ` <b>地址：</b>${address.display_name}<br>
+                <b>座標：</b>${lat.toFixed(6)}, ${lng.toFixed(6)} `
+            )
+            .openOn(map);
+        }
+      });
+    </script>
+  </body>
+</html>
