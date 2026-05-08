@@ -65,33 +65,16 @@ app.post("/uploads/photos", upload.array("photos"), (req, res) => {
 // https://www.npmjs.com/package/openai#streaming-responses
 // https://docs.ollama.com/openai
 import { OpenAI } from "openai";
-app.post(`/chat`, async (req, res) => {
-  // 使用 Ollama 的 Gemma3 模型進行聊天
-  if (!req.body?.message) {
-    return res.json({ message: "沒有 message !" });
-  }
 
-  const client = new OpenAI({
-    baseURL: "http://localhost:11434/v1/",
-    apiKey: "ollama",
-  });
+// Ollama 提供 OpenAI 相容 API；apiKey 不檢查，給任何字串都可以
+const ollama = new OpenAI({
+  baseURL: "http://localhost:11434/v1/",
+  apiKey: "ollama",
+});
 
-  const stream = await client.chat.completions.create({
-    model: "gemma3",
-    messages: [
-      {
-        role: "system",
-        content:
-          "<角色>您是一個出色的3C產品介紹人員，會使用正體中文、並且貼心精簡回答問題</角色>",
-          // "<角色>您是一個出色的3C產品介紹人員，會使用正體中文、並且貼心周詳回答問題</角色>"
-      },
-      {
-        role: "user",
-        content: req.body?.message,
-      },
-    ],
-    stream: true,
-  });
+app.post("/chat", async (req, res) => {
+  const message = req.body?.message;
+  if (!message) return res.status(400).json({ error: "沒有 message" });
 
   res.writeHead(200, {
     "Content-Type": "text/event-stream",
@@ -99,13 +82,28 @@ app.post(`/chat`, async (req, res) => {
     Connection: "keep-alive",
   });
 
+  const stream = await ollama.chat.completions.create({
+    model: "gemma3",
+    messages: [
+      {
+        role: "system",
+        content: "你是一個出色的 3C 產品介紹員，會使用正體中文、貼心精簡地回答",
+      },
+      { role: "user", content: message },
+    ],
+    stream: true,
+  });
+
+  // 客戶端關閉連線時中止 OpenAI 串流，避免繼續燒運算
+  req.on("close", () => stream.controller.abort());
+
   for await (const event of stream) {
-    // console.log(event);
-    console.log(JSON.stringify(event));
-    res.write(`data: ${JSON.stringify(event)}\n\n`);
-    // my.choices[0].delta.content
+    const delta = event.choices[0]?.delta?.content;
+    // JSON.stringify 處理可能含換行的字串（SSE data 不能有原始換行）
+    if (delta) res.write(`data: ${JSON.stringify(delta)}\n\n`);
   }
-  res.end("");
+  res.write("data: [DONE]\n\n");
+  res.end();
 });
 
 app.use(express.static("public"));
