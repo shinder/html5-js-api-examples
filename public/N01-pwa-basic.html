@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="zh">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>N01 PWA 基本 — 可安裝</title>
+    <link rel="manifest" href="manifest.webmanifest" />
+    <meta name="theme-color" content="#3367d6" />
+    <style>
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        max-width: 600px;
+        margin: 2rem auto;
+        padding: 0 1rem;
+        line-height: 1.6;
+      }
+      h1 { color: #3367d6; }
+      .tip {
+        background: #fff3cd;
+        border-left: 4px solid #ffc107;
+        padding: 0.8rem 1rem;
+        margin: 1rem 0;
+      }
+      ul { padding-left: 1.2rem; }
+      li { margin: 0.3rem 0; }
+    </style>
+  </head>
+  <body>
+    <h1>HTML5 API 學習 PWA</h1>
+
+    <p>本頁示範最基本的 PWA — 只要有 <code>manifest.webmanifest</code> + 圖示，網站就「可安裝」。</p>
+    <p>用 Chrome / Edge 開啟此頁，網址列右側會出現「安裝」按鈕。</p>
+    <p>iOS Safari：點擊「分享」→「加到主畫面」。</p>
+
+    <div class="tip">
+      <strong>注意：</strong>本頁僅含 manifest，沒有 Service Worker，所以「離線可用」尚未具備，
+      Chrome 的網址列安裝圖示也未必會顯示。下一個範例會加上 Service Worker。
+    </div>
+
+    <h2>各範例頁</h2>
+    <ul>
+      <li><a href="N01-pwa-basic.html">N01 manifest 基本（本頁）</a></li>
+      <li><a href="N02-pwa-service-worker.html">N02 註冊 Service Worker</a></li>
+      <li><a href="N03-pwa-offline.html">N03 離線快取</a></li>
+      <li><a href="N04-pwa-install.html">N04 自訂安裝按鈕</a></li>
+    </ul>
+  </body>
+</html>

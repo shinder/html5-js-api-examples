@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="zh">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>N03 離線快取</title>
+    <link rel="manifest" href="manifest.webmanifest" />
+    <meta name="theme-color" content="#3367d6" />
+    <style>
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        max-width: 600px;
+        margin: 2rem auto;
+        padding: 0 1rem;
+        line-height: 1.6;
+      }
+      h1 { color: #3367d6; }
+      #status {
+        font-size: 1.5rem;
+        font-weight: bold;
+      }
+      .tip {
+        background: #d1ecf1;
+        border-left: 4px solid #17a2b8;
+        padding: 0.8rem 1rem;
+        margin: 1rem 0;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>離線快取</h1>
+
+    <p>連線狀態：<span id="status"></span></p>
+
+    <div class="tip">
+      <strong>測試步驟：</strong>
+      <ol>
+        <li>第一次載入此頁（讓 Service Worker 把資源放進快取）</li>
+        <li>DevTools → Network → 切「Offline」</li>
+        <li>重新整理 — 仍能載入頁面</li>
+      </ol>
+    </div>
+
+    <p><a href="N01-pwa-basic.html">← 回到首頁</a></p>
+
+    <script>
+      const status = document.querySelector("#status");
+      const updateStatus = () => {
+        status.textContent = navigator.onLine ? "🟢 online" : "🔴 offline";
+        status.style.color = navigator.onLine ? "#28a745" : "#dc3545";
+      };
+      window.addEventListener("online", updateStatus);
+      window.addEventListener("offline", updateStatus);
+      updateStatus();
+
+      if ("serviceWorker" in navigator) {
+        navigator.serviceWorker.register("sw.js");
+      }
+    </script>
+  </body>
+</html>

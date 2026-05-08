@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="zh">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>N04 自訂安裝按鈕</title>
+    <link rel="manifest" href="manifest.webmanifest" />
+    <meta name="theme-color" content="#3367d6" />
+    <style>
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        max-width: 600px;
+        margin: 2rem auto;
+        padding: 0 1rem;
+        line-height: 1.6;
+      }
+      h1 { color: #3367d6; }
+      #installBtn {
+        font-size: 1.1rem;
+        padding: 0.7rem 1.5rem;
+        background: #3367d6;
+        color: white;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+      #installBtn:hover { background: #2851a3; }
+      #status {
+        margin-top: 1rem;
+        padding: 0.8rem;
+        background: #f5f5f5;
+        border-radius: 4px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>自訂安裝按鈕</h1>
+
+    <p>用 Chrome / Edge 打開此頁。若符合 PWA 安裝條件，下方按鈕會出現。</p>
+
+    <button id="installBtn" hidden>安裝到主畫面</button>
+    <p id="status">等待 beforeinstallprompt 事件…</p>
+
+    <p><a href="N01-pwa-basic.html">← 回到首頁</a></p>
+
+    <script>
+      const status = document.querySelector("#status");
+      let deferredPrompt;
+
+      window.addEventListener("beforeinstallprompt", (e) => {
+        e.preventDefault(); // 攔下預設網址列圖示
+        deferredPrompt = e;
+        installBtn.hidden = false; // 顯示自己的按鈕
+        status.textContent = "✓ 可安裝，按下方按鈕";
+      });
+
+      installBtn.addEventListener("click", async () => {
+        if (!deferredPrompt) return;
+        deferredPrompt.prompt(); // 觸發瀏覽器安裝對話框
+        const { outcome } = await deferredPrompt.userChoice;
+        status.textContent = `使用者選擇: ${outcome}`; // accepted / dismissed
+        deferredPrompt = null;
+        installBtn.hidden = true;
+      });
+
+      window.addEventListener("appinstalled", () => {
+        status.textContent = "✓ 已安裝！";
+      });
+
+      // 別忘了註冊 SW（beforeinstallprompt 的合規條件之一）
+      if ("serviceWorker" in navigator) {
+        navigator.serviceWorker.register("sw.js");
+      }
+
+      // 已用安裝模式開啟 → 顯示提示
+      if (window.matchMedia("(display-mode: standalone)").matches) {
+        status.textContent = "✓ 已用安裝模式開啟（standalone）";
+      }
+    </script>
+  </body>
+</html>

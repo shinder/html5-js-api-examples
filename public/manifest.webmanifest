@@ -1,0 +1,12 @@
+{
+  "name": "HTML5 API 學習 PWA",
+  "short_name": "HTML5 API",
+  "start_url": "./N01-pwa-basic.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#3367d6",
+  "icons": [
+    { "src": "icons/icon.svg", "sizes": "any", "type": "image/svg+xml" }
+  ]
+}
