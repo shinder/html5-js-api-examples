@@ -10,28 +10,24 @@
     <title>102-datalist-pattern</title>
   </head>
   <body>
-    <form onsubmit="return false;" data-novalidate autocomplete="on">
+    <form onsubmit="return false;" autocomplete="on">
       <label for="myName">姓名：</label>
-      <input type="text" name="myName" id="myName" required autofocus /><br />
+      <input type="text" id="myName" required autofocus /><br />
 
       <label for="myEmail">電郵：</label>
-      <input type="email" name="myEmail" id="myEmail" /><br />
+      <input type="email" id="myEmail" /><br />
 
       <label for="myGroup">組別：</label>
-      <input type="text" name="myGroup" id="myGroup" list="myList" />
+      <input type="text" id="myGroup" list="myList" />
       <datalist id="myList">
         <option value="甲組"></option>
         <option value="乙組"></option>
-        <option value="丙組"></option></datalist
-      ><br />
+        <option value="丙組"></option>
+      </datalist><br />
 
       <label for="myTel">手機號碼：</label>
-      <input
-        type="tel"
-        name="myTel"
-        id="myTel"
-        pattern="09\d{2}-?\d{3}-?\d{3}"
-      /><br />
+      <input type="tel" id="myTel" pattern="09\d{2}-?\d{3}-?\d{3}" /><br />
+
       <input type="submit" />
     </form>
   </body>

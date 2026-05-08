@@ -32,24 +32,25 @@
       <input type="submit" value="儲存" />
     </form>
     <script>
-      const prefix = "friend-book;;";
+      const PREFIX = "friend-book;;";
+
       document.form1.onsubmit = (e) => {
         e.preventDefault();
-        const t = Date.now(); // 當下時間 timestamp 單位毫秒數
-        let data = {
+        const t = Date.now();
+        const data = {
           name: document.form1.name.value,
           age: document.form1.age.value,
           mobile: document.form1.mobile.value,
           time: t,
         };
-        localStorage.setItem(prefix + t, JSON.stringify(data));
+        localStorage.setItem(PREFIX + t, JSON.stringify(data));
         document.form1.reset();
         alert("儲存完成！");
       };
 
+      // 標示目前所在頁面
       document.querySelectorAll("a").forEach((aTag) => {
-        const h = location.href;
-        if (h.indexOf(aTag.href) >= 0) {
+        if (location.href.includes(aTag.href)) {
           aTag.removeAttribute("href");
           aTag.style.backgroundColor = "orange";
         }

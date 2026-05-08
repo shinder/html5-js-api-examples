@@ -8,9 +8,7 @@
   <body>
     <div id="info"></div>
     <script>
-      const info = document.querySelector("#info");
-      const str = sessionStorage.getItem("s-key");
-      info.innerHTML = str;
+      info.innerHTML = sessionStorage.getItem("s-key"); // 讀到 711 寫入的值
     </script>
   </body>
 </html>

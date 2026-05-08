@@ -17,43 +17,31 @@
   </head>
   <body>
     <div id="myMap"></div>
-    <div id="info"></div>
-    <script src="https://maps.googleapis.com/maps/api/js?key="></script>
+    <!-- 申請 API key: https://console.cloud.google.com/ -->
+    <script src="https://maps.googleapis.com/maps/api/js?key=YOUR_KEY"></script>
     <script>
-      const positionHandler = (position) => {
-        const lat = position.coords.latitude; // 緯度
-        const lng = position.coords.longitude; // 經度
-        console.log(lat, lng);
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const latlng = new google.maps.LatLng(
+            position.coords.latitude,
+            position.coords.longitude
+          );
 
-        //取得地圖座標
-        const latlng = new google.maps.LatLng(lat, lng);
+          // 建立地圖
+          const map = new google.maps.Map(document.querySelector("#myMap"), {
+            zoom: 13,
+            center: latlng,
+            mapTypeId: google.maps.MapTypeId.ROADMAP,
+          });
 
-        const myOptions = {
-          zoom: 13,
-          center: latlng,
-          mapTypId: google.maps.MapTypeId.ROADMAP,
-        };
-        //建立地圖
-        const map = new google.maps.Map(
-          document.querySelector("#myMap"),
-          myOptions
-        );
-        //建立標記
-        const marker = new google.maps.Marker({
-          position: latlng,
-          title: "標記的名稱",
-        });
-        marker.setMap(map); // 把標記放入地圖
-
-        new google.maps.Marker({
-          position: new google.maps.LatLng(lat, lng + 0.02),
-          title: "標記2",
-        }).setMap(map);
-      };
-      // 取得目前位置經緯度
-      navigator.geolocation.getCurrentPosition(positionHandler, (error) => {
-        console.log(error);
-      });
+          // 標記目前位置
+          new google.maps.Marker({
+            position: latlng,
+            title: "你在這裡",
+          }).setMap(map);
+        },
+        (error) => console.log(error.code, error.message)
+      );
     </script>
   </body>
 </html>

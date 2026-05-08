@@ -33,12 +33,9 @@
 
     <script>
       const b = document.querySelector(".ball");
-      const handler = (e) => {
-        console.log(e.type);
-      };
-      b.addEventListener("dragstart", handler); // 開始拖曳
-      // b.addEventListener('drag', handler); // 拖曳中
-      b.addEventListener("dragend", handler); // 結束拖曳
+      const handler = (e) => console.log(e.type);
+      b.addEventListener("dragstart", handler);
+      b.addEventListener("dragend", handler);
     </script>
   </body>
 </html>

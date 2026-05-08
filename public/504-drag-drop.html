@@ -37,29 +37,17 @@
     <div class="rect" style="left: 250px"></div>
 
     <script>
-      let dragTarget = null; // 目前拖拉的對象
-      const balls = document.querySelectorAll(".ball");
-      const rects = document.querySelectorAll(".rect");
+      let dragTarget = null; // 目前正在拖的元素
 
-      balls.forEach((b) => {
+      document.querySelectorAll(".ball").forEach((b) => {
         b.addEventListener("dragstart", (e) => (dragTarget = e.currentTarget));
-        b.addEventListener("dragend", (e) => (dragTarget = null));
+        b.addEventListener("dragend", () => (dragTarget = null));
       });
 
-      rects.forEach((r) => {
-        r.addEventListener("dragenter", (e) => {
-          r.style.backgroundColor = "#ffeff6";
-        });
+      document.querySelectorAll(".rect").forEach((r) => {
         r.addEventListener("dragover", (e) => e.preventDefault());
-        r.addEventListener("dragleave", (e) => {
-          r.style.backgroundColor = "#a2eff6";
-        });
-        r.addEventListener("drop", (e) => {
-          r.style.backgroundColor = "#a2eff6";
-          console.log("drop");
-          if (dragTarget) {
-            r.append(dragTarget);
-          }
+        r.addEventListener("drop", () => {
+          if (dragTarget) r.append(dragTarget); // 把元素搬到新容器
         });
       });
     </script>

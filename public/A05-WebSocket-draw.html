@@ -21,75 +21,57 @@
     <input type="number" min="1" max="50" step="1" id="pSize" value="5" /> -
     <button onclick="clearCanvas()">清空重置</button>
     <script>
-      let count = 0;
-      // {"x1":0,"y1":0,"x2":0,"y2":0,"c":"#","s":5}
+      const ctx = myCanvas.getContext("2d");
+      ctx.lineCap = "round";
+      ctx.lineJoin = "round";
+
       const socket = new WebSocket(`ws://${location.hostname}:3072`);
 
-      socket.addEventListener("message", function (event) {
-        let dataObj;
+      // 收到別人畫的線就在自己 canvas 上重畫
+      socket.addEventListener("message", (e) => {
         try {
-          dataObj = JSON.parse(event.data);
+          const d = JSON.parse(e.data);
           ctx.beginPath();
-          ctx.strokeStyle = dataObj.c;
-          ctx.lineWidth = dataObj.s;
-          ctx.moveTo(dataObj.x1, dataObj.y1);
-          ctx.lineTo(dataObj.x2, dataObj.y2);
+          ctx.strokeStyle = d.c;
+          ctx.lineWidth = d.s;
+          ctx.moveTo(d.x1, d.y1);
+          ctx.lineTo(d.x2, d.y2);
           ctx.stroke();
         } catch (ex) {}
       });
 
-      const startP = {
-        x: 0,
-        y: 0,
-      };
+      // 自己畫線時：不直接 stroke，而是送 JSON 給伺服器
+      const startP = { x: 0, y: 0 };
 
-      const myCanvas = document.querySelector("#myCanvas"),
-        pColor = document.querySelector("#pColor"),
-        pSize = document.querySelector("#pSize"),
-        ctx = myCanvas.getContext("2d");
-      ctx.lineCap = "round";
-      ctx.lineJoin = "round";
+      myCanvas.addEventListener("mousedown", (e) => {
+        startP.x = e.offsetX;
+        startP.y = e.offsetY;
+        myCanvas.addEventListener("mousemove", onMove);
+        window.addEventListener("mouseup", onUp);
+      });
 
-      const mDown = (event) => {
-        window.addEventListener("mouseup", mUp);
-        myCanvas.addEventListener("mousemove", mMove);
-        startP.x = event.offsetX;
-        startP.y = event.offsetY;
-      };
-      const mUp = (event) => {
-        window.removeEventListener("mouseup", mUp);
-        myCanvas.removeEventListener("mousemove", mMove);
-      };
-      const mMove = (event) => {
-        const sendObj = {
+      const onMove = (e) => {
+        const data = {
           x1: startP.x,
           y1: startP.y,
+          x2: e.offsetX,
+          y2: e.offsetY,
           c: pColor.value,
           s: pSize.value,
-          x2: event.offsetX,
-          y2: event.offsetY,
         };
-        console.log(++count, sendObj);
-        if (socket && socket.readyState === WebSocket.OPEN) {
-          socket.send(JSON.stringify(sendObj));
+        if (socket.readyState === WebSocket.OPEN) {
+          socket.send(JSON.stringify(data));
         }
-        startP.x = event.offsetX;
-        startP.y = event.offsetY;
+        startP.x = e.offsetX;
+        startP.y = e.offsetY;
       };
-      myCanvas.addEventListener("mousedown", mDown);
-
-      // 設置畫筆大小顏色
-      const setPen = () => {
-        ctx.strokeStyle = pColor.value;
-        ctx.lineWidth = pSize.value;
+      const onUp = () => {
+        myCanvas.removeEventListener("mousemove", onMove);
+        window.removeEventListener("mouseup", onUp);
       };
-      pColor.addEventListener("change", setPen);
-      pSize.addEventListener("change", setPen);
-      setPen();
 
-      const clearCanvas = () => {
+      const clearCanvas = () =>
         ctx.clearRect(0, 0, myCanvas.width, myCanvas.height);
-      };
     </script>
   </body>
 </html>

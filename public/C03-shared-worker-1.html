@@ -7,15 +7,16 @@
     <title>C03-使用 shared worker</title>
   </head>
   <body>
-    <input type="text" placeholder="測試輸入欄" /><br />
+    <input type="text" placeholder="測試輸入欄" />
     <div id="info"></div>
     <script>
       const worker = new SharedWorker("js/shared-worker-prime-numbers.js");
 
-      worker.port.onmessage = (event) => {
-        const data = event.data;
-        const pn = data.primeNumbers[data.primeNumbers.length - 1];
-        info.innerHTML = `${data.action} - 最大質數：${pn}, ${data.runningTime} msec`;
+      // 注意：通訊不是直接 worker.postMessage，而是透過 worker.port
+      worker.port.onmessage = (e) => {
+        const { primeNumbers, runningTime, action } = e.data;
+        const last = primeNumbers[primeNumbers.length - 1];
+        info.innerHTML = `${action} - 最大質數：${last}, ${runningTime} msec`;
       };
 
       worker.port.postMessage("page-1");

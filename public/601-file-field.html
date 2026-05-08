@@ -14,22 +14,17 @@
     </style>
   </head>
   <body>
-    <input
-      type="file"
-      id="fileFiled"
-      style="display: none"
-      multiple
-      accept="image/*"
-    />
+    <input type="file" id="fileFiled" hidden multiple accept="image/*" />
     <div class="container" onclick="fileFiled.click()">點擊選取檔案</div>
 
     <script>
       const container = document.querySelector(".container");
       const fileFiled = document.querySelector("#fileFiled");
 
-      fileFiled.addEventListener("change", (e) => {
-        for (let f of fileFiled.files) {
-          container.innerText += `\n${f.name}`;
+      fileFiled.addEventListener("change", () => {
+        for (const f of fileFiled.files) {
+          // f 是 File 物件：name, type, size, lastModified
+          container.innerText += `\n${f.name} (${f.size} bytes)`;
         }
       });
     </script>

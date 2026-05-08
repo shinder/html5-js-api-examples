@@ -33,17 +33,15 @@
     <div class="rect" style="left: 250px"></div>
 
     <script>
-      const b = document.querySelector(".ball");
-      const [rect1, rect2] = document.querySelectorAll(".rect");
-      const dragHandler = (e) => console.log(e.type);
+      const [, rect2] = document.querySelectorAll(".rect");
 
-      b.addEventListener("dragstart", dragHandler); // 開始拖曳
-      b.addEventListener("dragend", dragHandler); // 結束拖曳
-
+      // 進入時改色，給使用者視覺回饋
       rect2.addEventListener("dragenter", (e) => {
         e.currentTarget.style.backgroundColor = "#ffeff6";
       });
+      // 一定要 preventDefault，drop 才會觸發
       rect2.addEventListener("dragover", (e) => e.preventDefault());
+      // 離開或放開都要還原顏色
       rect2.addEventListener("dragleave", (e) => {
         e.currentTarget.style.backgroundColor = "#a2eff6";
       });

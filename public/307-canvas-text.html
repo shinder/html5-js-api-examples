@@ -23,13 +23,15 @@
       ctx.strokeStyle = "blue";
       ctx.lineWidth = 2;
 
-      ctx.textAlign = "center";
-      ctx.textBaseline = "middle";
+      ctx.textAlign = "center";    // start | end | left | right | center
+      ctx.textBaseline = "middle"; // top | middle | alphabetic(預設) | bottom
 
       ctx.font = "bold 72px serif";
       ctx.fillText("Hello Canvas", 300, 100);
+
       ctx.font = "bold 72px arial";
       ctx.strokeText("Hello Canvas", 300, 200);
+
       ctx.fillText("哈囉", 300, 300);
     </script>
   </body>

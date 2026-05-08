@@ -1,7 +1,7 @@
 import multer from "multer";
-import { v4 } from "uuid";
+import { v4 as uuid } from "uuid";
 
-// 篩選及副檔名對應物件
+// MIME type 對應到副檔名（同時也是白名單）
 const extMap = {
   "image/jpeg": ".jpg",
   "image/png": ".png",
@@ -9,19 +9,13 @@ const extMap = {
 };
 
 const fileFilter = (req, file, cb) => {
-  // 對不到副檔名的檔案捨棄
+  // 不在白名單的 MIME type 直接捨棄（cb 第二個參數 false = 不收）
   cb(null, !!extMap[file.mimetype]);
 };
 
 const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    // 儲存檔案的資料夾位置
-    cb(null, "public/images");
-  },
-  filename: (req, file, cb) => {
-    // 隨機決定檔名
-    cb(null, v4() + extMap[file.mimetype]);
-  },
+  destination: (req, file, cb) => cb(null, "public/images"),
+  filename: (req, file, cb) => cb(null, uuid() + extMap[file.mimetype]),
 });
 
-export default multer({fileFilter, storage});
+export default multer({ fileFilter, storage });

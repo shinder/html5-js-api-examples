@@ -7,48 +7,45 @@
     <title>B01-Ajax upload single</title>
   </head>
   <body>
-    <form name="form1">
-      <label for="user">姓名</label>
-      <input type="text" name="user" id="user" /><br />
-      <label for="avatar">大頭貼</label>
-      <input type="file" name="avatar" id="avatar" accept="image/*" /><br />
-      <img src="" alt="" id="avatar-img" width="300px" /><br />
-      <label for="description">簡介</label><br />
-      <textarea name="description" id="description" cols="50"></textarea><br />
+    <form id="form1">
+      <label>姓名 <input type="text" name="user" id="user" /></label><br />
+      <label>大頭貼
+        <input type="file" name="avatar" id="avatar" accept="image/*" />
+      </label><br />
+      <img id="avatar-img" width="300" /><br />
+      <label>簡介
+        <textarea name="description" id="description" cols="50"></textarea>
+      </label><br />
       <button type="submit">上傳</button>
     </form>
+
     <script>
-      const avatarImg = document.querySelector("#avatar-img");
-      // 取得原有的內容
+      // 1. 載入時取既有資料填回欄位
       fetch("/profile.json")
-        .then((r) => {
-          return r.ok ? r.json() : {};
-        })
+        .then((r) => (r.ok ? r.json() : {}))
         .then((obj) => {
           user.value = obj.user || "";
-          avatarImg.src = obj.avatar || "";
           description.value = obj.description || "";
-        })
-        .catch((ex) => console.log("ex:", ex));
+          if (obj.avatar) avatarImg.src = obj.avatar;
+        });
 
-      // 選擇檔案時預覽
-      avatar.addEventListener("change", (e) => {
-        avatarImg.src = "";
+      // 2. 選檔即預覽
+      avatar.addEventListener("change", () => {
         if (avatar.files[0]) {
           avatarImg.src = URL.createObjectURL(avatar.files[0]);
         }
       });
-      // 以 AJAX 送出表單資料
-      document.form1.onsubmit = (e) => {
+
+      // 3. 送出表單
+      form1.addEventListener("submit", async (e) => {
         e.preventDefault();
-        const fd = new FormData(document.form1);
-        fetch("/uploads/profile", {
+        const res = await fetch("/uploads/profile", {
           method: "POST",
-          body: fd,
-        })
-          .then((r) => r.json())
-          .then((obj) => alert("上傳完成"));
-      };
+          body: new FormData(form1),
+        });
+        const result = await res.json();
+        alert(result.success ? "上傳完成" : "上傳失敗");
+      });
     </script>
   </body>
 </html>

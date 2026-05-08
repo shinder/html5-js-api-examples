@@ -7,14 +7,12 @@
   </head>
   <body>
     <div id="info"></div>
-    <br />
     <a href="712-sessionStorage-2.html">next</a>
     <script>
-      const info = document.querySelector("#info");
-      info.innerHTML = sessionStorage.getItem('s-key');
-      const str = "Hello ~~";
-
-      sessionStorage.setItem("s-key", str);
+      // 顯示上次留下的值（重新整理才會看到）
+      info.innerHTML = sessionStorage.getItem("s-key");
+      // 寫入新值
+      sessionStorage.setItem("s-key", "Hello ~~");
     </script>
   </body>
 </html>

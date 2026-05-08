@@ -32,14 +32,11 @@
       const myPass = document.querySelector("#myPass");
       const myPass2 = document.querySelector("#myPass2");
 
-      myPass2.addEventListener("blur", (event) => {
-        console.log(event);
+      myPass2.addEventListener("blur", () => {
         if (myPass.value !== myPass2.value) {
-          // 只要有設定，送出前就會顯示
           myPass2.setCustomValidity("密碼確認欄必須和密碼欄相同內容");
         } else {
-          // 取消
-          myPass2.setCustomValidity("");
+          myPass2.setCustomValidity(""); // 空字串 = 通過
         }
       });
     </script>

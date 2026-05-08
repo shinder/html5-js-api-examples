@@ -32,43 +32,24 @@
       <input type="submit" value="送出" />
     </form>
     <script>
-      let inputs = document.querySelectorAll("input");
-      const myValidate = function (event) {
-        // console.log(event.target);
-        console.log(event.target.validity);
+      const myValidate = (event) => {
         const t = event.target;
-        const v = t.validity;
+        const v = t.validity; // ValidityState
         let msg = "";
         switch (true) {
-          case v.valueMissing:
-            msg = "必填欄位";
-            break;
-          case v.typeMismatch:
-            msg = "請填寫正確的類型";
-            break;
-          case v.patternMismatch:
-            msg = "請填寫規定的格式";
-            break;
+          case v.valueMissing:    msg = "必填欄位"; break;
+          case v.typeMismatch:    msg = "請填寫正確的類型"; break;
+          case v.patternMismatch: msg = "請填寫規定的格式"; break;
         }
         t.setCustomValidity(msg);
       };
-      inputs.forEach((field) => {
+
+      document.querySelectorAll("input").forEach((field) => {
         field.addEventListener("blur", myValidate);
       });
 
-      /*
-    badInput
-    customError
-    patternMismatch
-    rangeOverflow
-    rangeUnderflow
-    stepMismatch
-    tooLong
-    tooShort
-    typeMismatch
-    valid
-    valueMissing
-     */
+      // ValidityState 還有 rangeOverflow / rangeUnderflow / stepMismatch
+      // / tooLong / tooShort / badInput / customError 等屬性可組合判斷
     </script>
   </body>
 </html>

@@ -17,47 +17,48 @@ app.get("/try-qs", (req, res) => {
 });
 
 app.get("/try-sse", (req, res) => {
-  let id = 30;
   res.writeHead(200, {
     "Content-Type": "text/event-stream",
     "Cache-Control": "no-cache",
     Connection: "keep-alive",
   });
-  setInterval(function () {
-    let now = new Date();
+
+  let id = 30;
+  const timer = setInterval(() => {
     res.write(`id: ${id++}\n`);
-    res.write(`data: ${now.toLocaleString()}\n\n`);
+    res.write(`data: ${new Date().toLocaleString()}\n\n`);
   }, 2000);
+
+  // 客戶端關閉分頁/離開時清掉 timer
+  req.on("close", () => clearInterval(timer));
 });
 
-// 處理個人資料的表單
+// 處理個人資料的表單（單檔上傳）
 app.post("/uploads/profile", upload.single("avatar"), async (req, res) => {
-  console.log(req.body);
-  let data = {}; // 要存檔的資料
+  // 讀取既有資料（不存在就用空物件）
+  let data = {};
   try {
-    const d = await fs.readFile("./public/profile.json");
-    data = JSON.parse(d.toString());
-  } catch (ex) {}
-  data = { ...data, ...req.body }; // 變更資料
+    data = JSON.parse(await fs.readFile("./public/profile.json", "utf8"));
+  } catch {} // 檔案不存在或內容錯誤都算空
 
-  if (req.file && req.file.originalname) {
-    // 若有上傳檔案
-    data.avatar = "/images/" + req.file.filename; // 儲存包含路徑
+  // 合併新資料
+  data = { ...data, ...req.body };
+  if (req.file) {
+    data.avatar = "/images/" + req.file.filename;
   }
+
   try {
     await fs.writeFile("./public/profile.json", JSON.stringify(data));
+    res.json({ success: true, data });
   } catch (ex) {
-    return res.json({ success: false, data });
+    res.json({ success: false, data });
   }
-  res.json({ success: true, data });
 });
 
+// 多檔上傳
 app.post("/uploads/photos", upload.array("photos"), (req, res) => {
-  const output = [];
-  req.files.forEach((file) => {
-    output.push("/images/" + file.filename);
-  });
-  res.json(output);
+  const urls = req.files.map((f) => "/images/" + f.filename);
+  res.json(urls);
 });
 
 // 本機需要有 Ollama 伺服器執行中

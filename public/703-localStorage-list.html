@@ -41,37 +41,36 @@
       <tbody id="the-list"></tbody>
     </table>
     <script>
-      const prefix = "friend-book;;";
+      const PREFIX = "friend-book;;";
       const tbody = document.querySelector("#the-list");
 
       const showList = () => {
         let str = "";
         for (let i = 0; i < localStorage.length; i++) {
-          let key = localStorage.key(i);
-          if (key.indexOf(prefix) === 0) {
-            let item = localStorage.getItem(key);
-            item = JSON.parse(item);
+          const key = localStorage.key(i);
+          if (!key.startsWith(PREFIX)) continue;
 
-            str += `<tr>
-              <td><button onclick="removeItem('${key}')">X</button></td>
-              <td>${item.name}</td>
-              <td>${item.age}</td>
-              <td>${item.mobile}</td></tr>`;
-          }
+          const item = JSON.parse(localStorage.getItem(key));
+          str += `<tr>
+            <td><button onclick="removeItem('${key}')">X</button></td>
+            <td>${item.name}</td>
+            <td>${item.age}</td>
+            <td>${item.mobile}</td>
+          </tr>`;
         }
         tbody.innerHTML = str;
       };
       showList();
 
       const removeItem = (key) => {
-        if (!confirm("確定要移除項目？")) return;
+        if (!confirm("確定要移除？")) return;
         localStorage.removeItem(key);
         showList();
       };
 
+      // 標示目前所在頁面
       document.querySelectorAll("a").forEach((aTag) => {
-        const h = location.href;
-        if (h.indexOf(aTag.href) >= 0) {
+        if (location.href.includes(aTag.href)) {
           aTag.removeAttribute("href");
           aTag.style.backgroundColor = "orange";
         }

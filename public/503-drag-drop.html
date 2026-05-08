@@ -34,26 +34,16 @@
 
     <script>
       const b = document.querySelector(".ball");
-      const [rect1, rect2] = document.querySelectorAll(".rect");
+      const [, rect2] = document.querySelectorAll(".rect");
 
       b.addEventListener("dragstart", (e) => {
-        // element id 當作資料
-        e.dataTransfer.setData("text", e.currentTarget.id);
+        e.dataTransfer.setData("text", e.currentTarget.id); // 把 id 當資料
       });
 
-      rect2.addEventListener("dragenter", (e) => {
-        e.currentTarget.style.backgroundColor = "#ffeff6";
-      });
       rect2.addEventListener("dragover", (e) => e.preventDefault());
-      rect2.addEventListener("dragleave", (e) => {
-        e.currentTarget.style.backgroundColor = "#a2eff6";
-      });
       rect2.addEventListener("drop", (e) => {
-        e.currentTarget.style.backgroundColor = "#a2eff6";
-        console.log("drop");
         const tid = e.dataTransfer.getData("text");
-        // 透過 id 取得 element 再加入 rect2
-        e.currentTarget.append(document.getElementById(tid));
+        e.currentTarget.append(document.getElementById(tid)); // 撈回原元素，移到目標
       });
     </script>
   </body>

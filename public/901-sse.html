@@ -10,20 +10,22 @@
     <title>901-Server Sent Event</title>
   </head>
   <body>
-    <div id="info">123</div>
+    <div id="info"></div>
     <script>
       const info = document.querySelector("#info");
       const es = new EventSource("/try-sse");
 
-      es.addEventListener("open", (e) => {
-        info.style.backgroundColor = "orange";
-        console.log(new Date().toLocaleString(), e);
+      es.addEventListener("open", () => {
+        info.style.backgroundColor = "orange"; // 連上時改色
       });
+
       es.addEventListener("message", (e) => {
+        // e.lastEventId 對應伺服端送的 id 欄位
         info.innerHTML = `${e.lastEventId}: ${e.data}`;
       });
+
       es.addEventListener("error", (e) => {
-        console.log(new Date().toLocaleString(), e);
+        console.log("error", e); // error 後瀏覽器會自動重連
       });
     </script>
   </body>

@@ -13,20 +13,20 @@
     <button id="doLoad">載入</button>
     <button id="doPlay" style="display: none">播放或停止</button>
     <script>
-      const doLoad = document.querySelector("#doLoad");
-      const doPlay = document.querySelector("#doPlay");
       const au = new Audio();
-      const handler = (event) => {
-        console.log(` ${event.type}
-			duration: ${au.duration}, currentTime: ${au.currentTime},
-			volume: ${au.volume}, muted: ${au.muted}, paused: ${au.paused} `);
-      };
-      au.addEventListener("loadedmetadata", handler);
-      au.addEventListener("timeupdate", handler);
-      au.addEventListener("ended", handler);
+
+      au.addEventListener("loadedmetadata", () => {
+        console.log("已載入完成，總長度：", au.duration, "秒");
+      });
+      au.addEventListener("timeupdate", () => {
+        console.log("目前播到：", au.currentTime);
+      });
+      au.addEventListener("ended", () => {
+        console.log("播完了");
+      });
 
       doLoad.onclick = () => {
-        au.src = "media/196381__minitauross__panflute-loop.mp3";
+        au.src = "media/196381__minitauross__panflute-loop.mp3"; // 設定 src 後才開始載入
         doLoad.style.display = "none";
         doPlay.style.display = "block";
       };

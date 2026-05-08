@@ -34,27 +34,19 @@
     ></div>
     <script>
       const container = document.querySelector(".container");
-      container.addEventListener("dragover", (e) => {
-        e.preventDefault();
-      });
-      container.addEventListener("dragenter", function (e) {
-        container.style.backgroundColor = "#ffe055";
-      });
-      container.addEventListener("dragleave", function (e) {
-        container.style.backgroundColor = "#b0e9ff";
-      });
-      container.addEventListener("drop", function (e) {
-        e.preventDefault(); // 避免預設行為 (瀏覽器開始圖檔)
-        container.style.backgroundColor = "#b0e9ff";
 
-        for (let f of e.dataTransfer.files) {
-          // 判斷是否為圖檔
-          if (f.type.indexOf("image/") === 0) {
-            const url = URL.createObjectURL(f);
-            container.innerHTML += `<div class="box">
+      container.addEventListener("dragover", (e) => e.preventDefault());
+      container.addEventListener("drop", (e) => {
+        e.preventDefault(); // 不擋掉，瀏覽器會直接開啟圖檔
+
+        for (const f of e.dataTransfer.files) {
+          if (!f.type.startsWith("image/")) continue;
+
+          const url = URL.createObjectURL(f); // 同步取得 blob: 暫存 URL
+          container.innerHTML += `
+            <div class="box">
               <img src="${url}" alt="${f.name}" />
-              </div>`;
-          }
+            </div>`;
         }
       });
     </script>

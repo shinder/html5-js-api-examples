@@ -6,31 +6,32 @@
     <title>A04-WebSocket chat</title>
   </head>
   <body>
-    <!-- A04-WebSocket-chat.html 的 HTML -->
-    <button onclick="doConnect()">連線</button>
-    <br />
-    <form onsubmit="event.preventDefault(); socket.send(myInput.value); ">
+    <button id="connectBtn">連線</button>
+    <form id="sendForm">
       <input type="text" id="myInput" />
-      <button onclick="" disabled id="sendBtn">送出</button>
+      <button id="sendBtn" disabled>送出</button>
     </form>
-    <br />
     <div id="info"></div>
+
     <script>
-      // A04-WebSocket-chat.html 的 JS
-      const info = document.querySelector("#info");
       let socket;
 
-      const myOpen = (e) => sendBtn.removeAttribute("disabled");
-      const myMessage = (e) => (info.innerHTML += `${e.data}<br>`);
-      const myClose = (e) => sendBtn.setAttribute("disabled", "true");
-
-      const doConnect = () => {
-        if (socket && socket.readyState === WebSocket.OPEN) return;
-        socket = new WebSocket(`ws://${location.hostname}:3071`); // 開始連線
-        socket.addEventListener("open", myOpen); // 連線時觸發
-        socket.addEventListener("message", myMessage); // 有訊息傳入時
-        socket.addEventListener("close", myClose); //斷線時
+      connectBtn.onclick = () => {
+        if (socket?.readyState === WebSocket.OPEN) return;
+        socket = new WebSocket(`ws://${location.hostname}:3071`);
+        socket.addEventListener("open", () => (sendBtn.disabled = false));
+        socket.addEventListener("close", () => (sendBtn.disabled = true));
+        socket.addEventListener(
+          "message",
+          (e) => (info.innerHTML += `${e.data}<br>`)
+        );
       };
+
+      sendForm.addEventListener("submit", (e) => {
+        e.preventDefault();
+        socket.send(myInput.value);
+        myInput.value = "";
+      });
     </script>
   </body>
 </html>

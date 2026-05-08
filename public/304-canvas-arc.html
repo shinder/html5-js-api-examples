@@ -20,38 +20,28 @@
       const myCanvas = document.querySelector("#myCanvas");
       const ctx = myCanvas.getContext("2d");
 
-      ctx.strokeStyle = "red"; // 設定畫筆顏色
-      ctx.lineWidth = 6; // 設定畫筆粗細
-      ctx.fillStyle = "lightblue"; // 填滿的顏色
+      ctx.strokeStyle = "red";
+      ctx.lineWidth = 6;
 
       // arc(x, y, radius, startAngle, endAngle, anticlockwise);
-      // arc(圓心x, 圓心y, 半徑, 起始角度, 結束角度, 是否為逆時針方向);
-      ctx.arc(420, 60, 50, 0, Math.PI * 2); // 圓形
+      // arc(圓心x, 圓心y, 半徑, 起始角度,  結束角度,  是否逆時針(預設 false))
+
+      // 完整圓 — 起點 0、終點 2π
+      ctx.beginPath();
+      ctx.arc(100, 100, 50, 0, Math.PI * 2);
       ctx.stroke();
 
-      for (let k = 0; k < 3; k++) {
-        for (let i = 0; i < 3; i++) {
-          ctx.beginPath();
-          let x = 60 + 120 * i,
-            y = 60 + 120 * k,
-            radius = 40,
-            startAngle = 0,
-            endAngle = (Math.PI / 2) * (i + 1),
-            anticlockwise = false;
-          ctx.arc(x, y, radius, startAngle, endAngle, anticlockwise);
-          switch (k) {
-            case 0:
-              ctx.stroke();
-              break;
-            case 1:
-              ctx.fill();
-              break;
-            case 2: // 扇形
-              ctx.lineTo(x, y);
-              ctx.fill();
-          }
-        }
-      }
+      // 1/4 弧
+      ctx.beginPath();
+      ctx.arc(250, 100, 50, 0, Math.PI / 2);
+      ctx.stroke();
+
+      // 扇形 — 弧 + lineTo 圓心 + fill
+      ctx.beginPath();
+      ctx.arc(400, 100, 50, 0, Math.PI / 2);
+      ctx.lineTo(400, 100);
+      ctx.fillStyle = "lightblue";
+      ctx.fill();
     </script>
   </body>
 </html>

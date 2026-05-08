@@ -38,11 +38,12 @@
       />
     </svg>
     <script>
+      // 點擊第一個 polygon 切換 class
       const polygon1 = document.querySelector("polygon");
-      polygon1.onclick = () => {
-        const newClass = polygon1.classList.contains("c1") ? "c2" : "c1";
-        polygon1.setAttribute("class", newClass);
-      };
+      polygon1.addEventListener("click", () => {
+        const next = polygon1.classList.contains("c1") ? "c2" : "c1";
+        polygon1.setAttribute("class", next);
+      });
     </script>
   </body>
 </html>

@@ -7,40 +7,26 @@
     <title>B02-Ajax upload multiple</title>
   </head>
   <body>
-    <form action="" name="form1" onsubmit="return false;">
-      <label for="photos">選了就上傳</label>
-      <input
-        type="file"
-        name="photos"
-        id="photos"
-        accept="image/*"
-        multiple
-      /><br />
+    <form id="form1">
+      <label>選了就上傳
+        <input type="file" name="photos" id="photos" accept="image/*" multiple />
+      </label>
       <div id="img-container"></div>
-      <textarea
-        name="description"
-        id="description"
-        cols="80" rows="10"
-        readonly
-      ></textarea>
+      <textarea id="description" cols="80" rows="10" readonly></textarea>
     </form>
+
     <script>
-      const imgContainer = document.querySelector("#img-container");
-      photos.addEventListener("change", (event) => {
-        const fd = new FormData(document.form1);
-        fetch("/uploads/photos", {
+      photos.addEventListener("change", async () => {
+        const res = await fetch("/uploads/photos", {
           method: "POST",
-          body: fd,
-        })
-          .then((r) => r.json())
-          .then((ar) => {
-            description.value = JSON.stringify(ar, null, 4);
-            let str = "";
-            ar.forEach((el) => {
-              str += `<img src="${el}" alt="" width="300px">`;
-            });
-            imgContainer.innerHTML = str;
-          });
+          body: new FormData(form1),
+        });
+        const urls = await res.json();
+
+        description.value = JSON.stringify(urls, null, 4);
+        imgContainer.innerHTML = urls
+          .map((url) => `<img src="${url}" width="300" />`)
+          .join("");
       });
     </script>
   </body>

@@ -18,96 +18,77 @@
     <canvas id="myCanvas" width="600" height="400"></canvas>
     <br />
     <input type="color" id="pColor" value="#0000FF" />
-    <input type="number" min="1" max="50" step="1" id="pSize" value="5" /> -
-    <button onclick="clearCanvas()">清空重置</button> -
+    <input type="number" id="pSize" min="1" max="50" step="1" value="5" />
+    <button onclick="clearCanvas()">清空</button>
     <button onclick="saveCanvas()">儲存</button>
-    <br />載入
+    載入
     <select id="listCombo" onchange="loadCanvas(this.value)"></select>
+
     <script>
-      const myCanvas = document.querySelector("#myCanvas"),
-        pColor = document.querySelector("#pColor"),
-        pSize = document.querySelector("#pSize"),
-        ctx = myCanvas.getContext("2d");
-      const listCombo = document.querySelector("#listCombo");
+      const PREFIX = "shinder-draw;;";
+      const ctx = myCanvas.getContext("2d");
       ctx.lineCap = "round";
       ctx.lineJoin = "round";
 
-      const mDown = (event) => {
-        window.addEventListener("mouseup", mUp);
-        myCanvas.addEventListener("mousemove", mMove);
+      // 塗鴉
+      myCanvas.addEventListener("mousedown", (e) => {
         ctx.beginPath();
-        ctx.moveTo(event.offsetX, event.offsetY);
-      };
-      const mUp = (event) => {
-        window.removeEventListener("mouseup", mUp);
-        myCanvas.removeEventListener("mousemove", mMove);
-      };
-      const mMove = (event) => {
-        ctx.lineTo(event.offsetX, event.offsetY);
+        ctx.moveTo(e.offsetX, e.offsetY);
+        myCanvas.addEventListener("mousemove", onMove);
+        window.addEventListener("mouseup", onUp);
+      });
+      const onMove = (e) => {
+        ctx.lineTo(e.offsetX, e.offsetY);
         ctx.stroke();
       };
-      myCanvas.addEventListener("mousedown", mDown);
+      const onUp = () => {
+        myCanvas.removeEventListener("mousemove", onMove);
+        window.removeEventListener("mouseup", onUp);
+      };
 
-      // 設置畫筆大小顏色
+      // 跟著選色器/筆寬欄位變化
       const setPen = () => {
         ctx.strokeStyle = pColor.value;
         ctx.lineWidth = pSize.value;
       };
-      pColor.addEventListener("change", setPen);
-      pSize.addEventListener("change", setPen);
+      [pColor, pSize].forEach((el) => el.addEventListener("change", setPen));
       setPen();
 
-      const clearCanvas = () => {
+      const clearCanvas = () =>
         ctx.clearRect(0, 0, myCanvas.width, myCanvas.height);
-      };
 
-      let drawItems;
-      // 列出所有符合的項目
-      const listSavedItems = () => {
-        drawItems = []; // reset
-        for (let i = 0; i < localStorage.length; i++) {
-          let key = localStorage.key(i);
-          let keyAr = key.split(";;");
-          if (keyAr.length === 2 && keyAr[0] === "shinder-draw") {
-            drawItems.push({
-              key: key,
-              date: new Date(keyAr[1] * 1).toLocaleString(),
-            });
-          }
-        }
-        return drawItems;
-      };
-
-      // 儲存項目
+      // 儲存目前 canvas 為 base64 圖檔字串
       const saveCanvas = () => {
-        const imgTxt = myCanvas.toDataURL("image/png");
-        let key = "shinder-draw;;" + Date.now();
-        localStorage.setItem(key, imgTxt);
-        alert("儲存完成");
+        const dataURL = myCanvas.toDataURL("image/png");
+        localStorage.setItem(PREFIX + Date.now(), dataURL);
         renewList();
       };
 
-      // 更新已儲存的列表
-      const renewList = () => {
-        let list = listSavedItems();
-        listCombo.innerHTML =
-          '<option value=""> -- 選擇載入的項目 -- </option>';
-        for (let item of list) {
-          listCombo.innerHTML += `<option value="${item.key}">${item.date}</option>`;
-        }
-      };
-      renewList();
-
-      // 載入項目
+      // 載入指定 key 的圖到 canvas
       const loadCanvas = (key) => {
         if (!key) return;
         clearCanvas();
         const img = new Image();
-        img.onload = () => {
-          ctx.drawImage(img, 0, 0);
-        };
+        img.onload = () => ctx.drawImage(img, 0, 0);
         img.src = localStorage.getItem(key);
       };
+
+      // 從 localStorage 列出所有儲存的塗鴉，更新下拉選單
+      const renewList = () => {
+        const items = [];
+        for (let i = 0; i < localStorage.length; i++) {
+          const key = localStorage.key(i);
+          if (!key.startsWith(PREFIX)) continue;
+          const ts = key.slice(PREFIX.length);
+          items.push({ key, date: new Date(Number(ts)).toLocaleString() });
+        }
+        listCombo.innerHTML =
+          `<option value="">-- 選擇載入的項目 --</option>` +
+          items
+            .map((i) => `<option value="${i.key}">${i.date}</option>`)
+            .join("");
+      };
+      renewList();
     </script>
   </body>
 </html>

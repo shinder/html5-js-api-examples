@@ -21,16 +21,14 @@
       const container = document.querySelector(".container");
       const fileFiled = document.querySelector("#fileFiled");
 
-      const readerLoaded = (event) => {
-        container.append(event.target.result);
-      };
-      fileFiled.addEventListener("change", (event) => {
+      fileFiled.addEventListener("change", () => {
         if (!fileFiled.files.length) return;
 
-        const file = fileFiled.files[0];
         const reader = new FileReader();
-        reader.addEventListener("load", readerLoaded);
-        reader.readAsText(file);
+        reader.addEventListener("load", (e) => {
+          container.value = e.target.result; // 結果是字串
+        });
+        reader.readAsText(fileFiled.files[0]);
       });
     </script>
   </body>
