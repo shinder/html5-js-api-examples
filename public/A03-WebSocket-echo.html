@@ -17,7 +17,7 @@
       connectBtn.onclick = () => {
         if (socket?.readyState === WebSocket.OPEN) return;
 
-        socket = new WebSocket(`ws://${location.hostname}:3070`);
+        socket = new WebSocket(`ws://${location.host}/ws/echo`);
         socket.addEventListener("open", () => (sendBtn.disabled = false));
         socket.addEventListener("close", () => (sendBtn.disabled = true));
         socket.addEventListener("message", (e) => {

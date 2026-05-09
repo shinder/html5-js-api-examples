@@ -1,14 +1,11 @@
-import { WebSocketServer } from "ws";
+// 由 index.js 建好的 WebSocketServer 注入；同 port、用 path 區分
+export default function setup(wss) {
+  wss.on("connection", (ws, req) => {
+    const ip = req.socket.remoteAddress;
+    ws.send(`連線了, 你來自 ${ip}, 目前連線人數: ${wss.clients.size}`);
 
-const wsServer = new WebSocketServer({ port: 3070 });
-
-wsServer.on("connection", (ws, req) => {
-  const ip = req.socket.remoteAddress;
-  ws.send(`連線了, 你來自 ${ip}, 目前連線人數: ${wsServer.clients.size}`);
-
-  ws.on("message", (message) => {
-    ws.send(message.toString()); // 原訊息送回
+    ws.on("message", (message) => {
+      ws.send(message.toString()); // 原訊息送回
+    });
   });
-});
-
-export default wsServer;
+}

@@ -18,7 +18,7 @@
 
       connectBtn.onclick = () => {
         if (socket?.readyState === WebSocket.OPEN) return;
-        socket = new WebSocket(`ws://${location.hostname}:3071`);
+        socket = new WebSocket(`ws://${location.host}/ws/chat`);
         socket.addEventListener("open", () => (sendBtn.disabled = false));
         socket.addEventListener("close", () => (sendBtn.disabled = true));
         socket.addEventListener(

@@ -25,7 +25,7 @@
       ctx.lineCap = "round";
       ctx.lineJoin = "round";
 
-      const socket = new WebSocket(`ws://${location.hostname}:3072`);
+      const socket = new WebSocket(`ws://${location.host}/ws/draw`);
 
       // 收到別人畫的線就在自己 canvas 上重畫
       socket.addEventListener("message", (e) => {

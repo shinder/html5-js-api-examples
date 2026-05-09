@@ -1,9 +1,10 @@
 import express from "express";
 import serveIndex from "serve-index";
 import fs from "node:fs/promises";
-import "./routes/ws-echo.js";
-import "./routes/ws-chat.js";
-import "./routes/ws-draw.js";
+import { WebSocketServer } from "ws";
+import setupEcho from "./routes/ws-echo.js";
+import setupChat from "./routes/ws-chat.js";
+import setupDraw from "./routes/ws-draw.js";
 import upload from "./routes/upload-img-module.js";
 
 const web_port = process.env.WEB_PORT || 3031;
@@ -110,6 +111,30 @@ app.use(express.static("public"));
 // 要放在所有路由之後
 app.use("/", serveIndex("public", { icons: true }));
 
-app.listen(web_port, () => {
+const server = app.listen(web_port, () => {
   console.log(`伺服器啟動於通訊埠：http://localhost:${web_port}`);
+});
+
+// WebSocket：三條 path 共用同一 port（取代原本 3070/3071/3072 三個獨立 port）
+const wss = {
+  echo: new WebSocketServer({ noServer: true }),
+  chat: new WebSocketServer({ noServer: true }),
+  draw: new WebSocketServer({ noServer: true }),
+};
+
+setupEcho(wss.echo);
+setupChat(wss.chat);
+setupDraw(wss.draw);
+
+// HTTP upgrade → 依 path 分流到對應的 WebSocketServer
+server.on("upgrade", (req, socket, head) => {
+  const { pathname } = new URL(req.url, `http://${req.headers.host}`);
+  const target = wss[pathname.replace(/^\/ws\//, "")];
+  if (!target) {
+    socket.destroy();
+    return;
+  }
+  target.handleUpgrade(req, socket, head, (ws) => {
+    target.emit("connection", ws, req);
+  });
 });
