@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="zh">
   <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>L010 基本地圖設置</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
     <style>
@@ -26,7 +28,7 @@
 
       // 添加 OSM 圖層
       L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-        maxZoom: 15,
+        maxZoom: 19,
         attribution:
           '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
       }).addTo(map);

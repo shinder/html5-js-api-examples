@@ -1,7 +1,9 @@
 <!DOCTYPE html>
 <html lang="zh">
   <head>
-    <title>070 路線規劃</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>L070 路線規劃</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
     <style>
       #map {
@@ -11,7 +13,8 @@
     </style>
   </head>
   <body>
-    <h2>070 路線規劃</h2>
+    <h2>L070 路線規劃</h2>
+    <p id="info"></p>
     <div id="map"></div>
 
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
@@ -46,24 +49,22 @@
         return null;
       }
 
-      // 使用範例
+      // 起終點 marker
+      L.marker(startPoint).addTo(map).bindPopup("起點：台北 101");
+      L.marker(endPoint).addTo(map).bindPopup("終點：台北車站");
 
       getRoute(startPoint, endPoint).then((route) => {
-        if (route) {
-          // 顯示路線
-          L.geoJSON(route.geometry, {
-            style: {
-              color: "#0080ff",
-              weight: 5,
-              opacity: 0.8,
-            },
-          }).addTo(map);
+        if (!route) return;
 
-          // 顯示距離和時間
-          const distance = (route.distance / 1000).toFixed(1);
-          const duration = Math.round(route.duration / 60);
-          console.log(`距離: ${distance} km, 時間: ${duration} 分鐘`);
-        }
+        // 繪製路線
+        L.geoJSON(route.geometry, {
+          style: { color: "#0080ff", weight: 5, opacity: 0.8 },
+        }).addTo(map);
+
+        // 顯示距離與時間
+        const distance = (route.distance / 1000).toFixed(1);
+        const duration = Math.round(route.duration / 60);
+        info.innerText = `距離: ${distance} km, 時間: ${duration} 分鐘`;
       });
     </script>
   </body>

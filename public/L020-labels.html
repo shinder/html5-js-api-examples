@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="zh">
   <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>L020 地圖標示</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
     <style>
@@ -22,7 +24,7 @@
 
       // 添加 OSM 圖層
       L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-        maxZoom: 15,
+        maxZoom: 19,
         attribution:
           '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
       }).addTo(map);
@@ -30,11 +32,9 @@
       // 自訂圖標
       const customIcon = L.icon({
         iconUrl: "./images/mario.gif",
-        // shadowUrl: "./images/marker-shadow.png",
         iconSize: [40, 40],
-        iconAnchor: [20, 40],
-        popupAnchor: [0, -34],
-        // shadowSize: [41, 41],
+        iconAnchor: [20, 40],     // 圖示底部中點對齊地理座標
+        popupAnchor: [0, -34],    // popup 顯示在 anchor 上方 34px
       });
 
       // 添加標記

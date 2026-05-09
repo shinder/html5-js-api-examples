@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="zh">
   <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>L110 選單到圖標</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
     <style>
@@ -45,61 +47,50 @@
     <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
     <script>
       const list = document.querySelector(".list");
-      const taipei101 = [25.033, 121.5654]; // [緯度, 經度]
-      // 初始化地圖 (台北市 101)
+      const taipei101 = [25.033, 121.5654];
       const map = L.map("map").setView(taipei101, 13);
-      let elements;
-      const menuMap = new Map();
+      const menuMap = new Map(); // DOM 元素 → marker / 座標
 
-      // 添加 OSM 圖層
       L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
         maxZoom: 19,
         attribution:
           '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
       }).addTo(map);
 
-      const genMenu = () => {
-        let count = 20;
-        elements.sort(() => Math.random() - 0.5); // 隨機排序
-        for (cafe of elements) {
-          if (cafe.type === "node") {
-            const name = cafe.tags?.name || "咖啡店";
+      const genMenu = (elements) => {
+        // 隨機取 20 個 node 類型的咖啡店
+        const cafes = elements
+          .filter((c) => c.type === "node")
+          .sort(() => Math.random() - 0.5)
+          .slice(0, 20);
 
-            const marker = L.marker([cafe.lat, cafe.lon])
-              .addTo(map)
-              .bindPopup(`☕  ${name}`);
-            const item = document.createElement("div");
-            item.className = "item";
-            item.innerText = name;
-            list.append(item);
-            menuMap.set(item, {
-              lat: cafe.lat, 
-              lon: cafe.lon,
-              item,
-              marker,
-            });
-            count--;
-          }
-          if (count <= 0) {
-            break;
-          }
+        for (const cafe of cafes) {
+          const name = cafe.tags?.name || "咖啡店";
+
+          const marker = L.marker([cafe.lat, cafe.lon])
+            .addTo(map)
+            .bindPopup(`☕  ${name}`);
+
+          const item = document.createElement("div");
+          item.className = "item";
+          item.innerText = name;
+          list.append(item);
+
+          menuMap.set(item, { lat: cafe.lat, lon: cafe.lon, marker });
         }
       };
+
+      // 事件委派：點選單項 → 開啟對應 marker 的 popup
       list.addEventListener("click", (e) => {
-        const t = e.target;
-        const data = menuMap.get(t);
-        if(!data) return;
-        const {lat, lon, item, marker} = data;
-        marker.openPopup();
-        map.setView([lat, lon], 16);
-        
+        const data = menuMap.get(e.target);
+        if (!data) return;
+        data.marker.openPopup();
+        map.setView([data.lat, data.lon], 16);
       });
+
       fetch(`data/cafes.json`)
         .then((r) => r.json())
-        .then((result) => {
-          elements = result.elements;
-          genMenu();
-        });
+        .then((result) => genMenu(result.elements));
     </script>
   </body>
 </html>

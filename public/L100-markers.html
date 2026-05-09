@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="zh">
   <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>L100 多個圖標</title>
     <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
     <style>
@@ -22,7 +24,7 @@
 
       // 添加 OSM 圖層
       L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
-        maxZoom: 15,
+        maxZoom: 19,
         attribution:
           '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
       }).addTo(map);
@@ -31,12 +33,11 @@
         .then((r) => r.json())
         .then((result) => {
           result.elements.forEach((cafe) => {
-            if (cafe.type === "node") {
-              const name = cafe.tags?.name || "咖啡店";
-              const marker = L.marker([cafe.lat, cafe.lon])
-                .addTo(map)
-                .bindPopup(`☕ ${name}`);
-            }
+            if (cafe.type !== "node") return;
+            const name = cafe.tags?.name || "咖啡店";
+            L.marker([cafe.lat, cafe.lon])
+              .addTo(map)
+              .bindPopup(`☕ ${name}`);
           });
         });
     </script>
